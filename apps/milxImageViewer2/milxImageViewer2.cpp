@@ -54,7 +54,6 @@ int main(int argc, char *argv[])
     }
 
     image->generateImage();
-	image->show();
     
     //Setup size
     QSize desktopSize = qApp->desktop()->availableGeometry().size();
@@ -82,7 +81,6 @@ int main(int argc, char *argv[])
     mainWindow.setMenuBar(menuBar);
     */
     mainWindow.setWindowTitle("milxImageViewer2");
-    //mainWindow.setCentralWidget(image);
     mainWindow.show();
 
     return app.exec();

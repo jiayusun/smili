@@ -26,15 +26,13 @@ milxQtImage2::~milxQtImage2()
 void milxQtImage2::generateImage(const bool quietly)
 {
 	milxQtImage::generateImage(quietly);
-   //ui.view1->SetRenderWindow(GetRenderWindow());
-  //riw[0]->SetupInteractor(
-    //  ui.view1->GetRenderWindow()->GetInteractor());
 
-   //ui.view2->SetRenderWindow(GetRenderWindow());
-//  riw[1]->SetupInteractor(
-  //    ui.view2->GetRenderWindow()->GetInteractor());
+	ui.view1->SetRenderWindow(GetRenderWindow());
+	SetupInteractor(ui.view1->GetRenderWindow()->GetInteractor());
+	
+    ui.view2->SetRenderWindow(GetRenderWindow());
+    SetupInteractor(ui.view2->GetRenderWindow()->GetInteractor());
 
-     //ui.view3->SetRenderWindow(GetRenderWindow());
-  //riw[2]->SetupInteractor(
-    //  ui.view3->GetRenderWindow()->GetInteractor());
+    ui.view3->SetRenderWindow(GetRenderWindow());
+    SetupInteractor(ui.view3->GetRenderWindow()->GetInteractor());
 }
