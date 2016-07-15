@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include "milxQtImage.h"
 #include "ui_milxQtImage2.h"
-
+#include "vtkImageViewer3.h" 
 
 
 class MILXQT_EXPORT milxQtImage2 : public milxQtImage
@@ -16,8 +16,9 @@ public:
 	milxQtImage2(QMainWindow *parent = 0, bool contextSystem = true);
 	~milxQtImage2();
 	void generateImage(const bool quietly = false);
-
+	
 protected:
 	Ui_milxQtImage2 ui;
+	vtkSmartPointer<vtkImageViewer3> riw[3];
 };
 #endif
