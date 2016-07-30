@@ -16,6 +16,11 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 	//ui.view2 = qobject_cast<QVTKWidget*>(this);
 	//ui.view3 = qobject_cast<QVTKWidget*>(this);
 	//ui.view4 = qobject_cast<QVTKWidget*>(this);
+
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i] = vtkSmartPointer<vtkImageViewer3>::New();
+	}
 }
 	
 milxQtImage2::~milxQtImage2()
@@ -25,10 +30,6 @@ milxQtImage2::~milxQtImage2()
 
 void milxQtImage2::generateImage(const bool quietly)
 {
-	for (int i = 0; i < 3; i++)
-	{
-		riw[i] = vtkSmartPointer<vtkImageViewer3>::New();
-	}
 
 	if (loaded)
 	{
@@ -159,4 +160,38 @@ void milxQtImage2::generateImage(const bool quietly)
 	riw[0]->SetSliceOrientationToXY();
 	riw[1]->SetSliceOrientationToXZ();
 	riw[2]->SetSliceOrientationToYZ();
+	
+
+	ui.pushButton_30->setIcon(QIcon(":/resources/toolbar/intensity.png"));
+	QObject::connect(ui.pushButton_30, SIGNAL(clicked()), this, SLOT(updateWindowsWithAutoLevel()));
+	
+	ui.pushButton_29->setIcon(QIcon(":/resources/toolbar/refresh.png"));
+	QObject::connect(ui.pushButton_29, SIGNAL(clicked()), ui.view1, SLOT(riw[0]->milxQtMain::updateWindowsWithRefresh()));
+
+	ui.pushButton_28->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
+	QObject::connect(ui.pushButton_28, SIGNAL(clicked()), ui.view1, SLOT(riw[0]->milxQtMain::updateWindowsWithCursors()));
+	
+	ui.pushButton_27->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+
+	
+	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
+	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
+	slicesView->addImageActor(riw[1]->GetImageActor(), getTransformMatrix());
+	slicesView->addImageActor(riw[2]->GetImageActor(), getTransformMatrix());
+	//slicesView->addActor(newImage->GetCursorActor(), newImage->getTransformMatrix());
+	slicesView->generateRender();
+	ui.view4->SetRenderWindow(slicesView->GetRenderWindow());
+}
+
+void milxQtImage2::updateWindowsWithAutoLevel()
+{
+	autoLevel();
+	//updateData();
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->SetColorWindow(viewer->GetColorWindow());
+		riw[i]->SetColorLevel(viewer->GetColorLevel());
+		riw[i]->Render();
+	}
+	//generateImage();
 }
