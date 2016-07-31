@@ -169,7 +169,7 @@ void milxQtImage2::generateImage(const bool quietly)
 	QObject::connect(ui.pushButton_29, SIGNAL(clicked()), this, SLOT(updateWindowsWithRefresh()));
 
 	ui.pushButton_28->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
-	QObject::connect(ui.pushButton_28, SIGNAL(clicked()), ui.view1, SLOT(riw[0]->milxQtMain::updateWindowsWithCursors()));
+	QObject::connect(ui.pushButton_28, SIGNAL(clicked()), this, SLOT(updateWindowsWithCursors()));
 	
 	ui.pushButton_27->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 
@@ -199,7 +199,7 @@ void milxQtImage2::updateWindowsWithAutoLevel()
 
 void milxQtImage2::updateWindowsWithRefresh()
 {
-	
+
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -208,5 +208,14 @@ void milxQtImage2::updateWindowsWithRefresh()
 		riw[i]->Render();
 		milxQtRenderWindow::refresh();
 	}
-	
+}
+
+void milxQtImage2::updateWindowsWithCursors()
+{
+
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->EnableCursor();
+		cursorAct->setChecked(true);
+	}
 }

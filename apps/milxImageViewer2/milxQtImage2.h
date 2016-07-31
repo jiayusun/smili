@@ -20,6 +20,7 @@ public:
 public slots:
 	void updateWindowsWithAutoLevel();
 	void updateWindowsWithRefresh();
+	void updateWindowsWithCursors();
 
 protected:
 	Ui_milxQtImage2 ui;
