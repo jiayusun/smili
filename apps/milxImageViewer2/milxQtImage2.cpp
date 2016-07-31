@@ -166,7 +166,7 @@ void milxQtImage2::generateImage(const bool quietly)
 	QObject::connect(ui.pushButton_30, SIGNAL(clicked()), this, SLOT(updateWindowsWithAutoLevel()));
 	
 	ui.pushButton_29->setIcon(QIcon(":/resources/toolbar/refresh.png"));
-	QObject::connect(ui.pushButton_29, SIGNAL(clicked()), ui.view1, SLOT(riw[0]->milxQtMain::updateWindowsWithRefresh()));
+	QObject::connect(ui.pushButton_29, SIGNAL(clicked()), this, SLOT(updateWindowsWithRefresh()));
 
 	ui.pushButton_28->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
 	QObject::connect(ui.pushButton_28, SIGNAL(clicked()), ui.view1, SLOT(riw[0]->milxQtMain::updateWindowsWithCursors()));
@@ -194,4 +194,19 @@ void milxQtImage2::updateWindowsWithAutoLevel()
 		riw[i]->Render();
 	}
 	//generateImage();
+}
+
+
+void milxQtImage2::updateWindowsWithRefresh()
+{
+	
+
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->UpdateCursor();
+		riw[i]->GetInteractorStyle()->InvokeEvent(vtkCommand::ResetWindowLevelEvent); //Reset window level as if pressing 'r'
+		riw[i]->Render();
+		milxQtRenderWindow::refresh();
+	}
+	
 }
