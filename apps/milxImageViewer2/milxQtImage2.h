@@ -21,9 +21,11 @@ public slots:
 	void updateWindowsWithAutoLevel();
 	void updateWindowsWithRefresh();
 	void updateWindowsWithCursors();
+	void saveScreen(QString filename = "");
 
 protected:
 	Ui_milxQtImage2 ui;
 	vtkSmartPointer<vtkImageViewer3> riw[3];
+	int magnifyFactor = 2;
 };
 #endif

@@ -4,8 +4,8 @@
 #include <QMessageBox> 
 #include <QSystemTrayIcon> 
 #include <QStringList> 
-
-
+#include <vtkWindowToImageFilter.h>
+#include "milxQtFile.h"
 
 
 
@@ -172,8 +172,8 @@ void milxQtImage2::generateImage(const bool quietly)
 	QObject::connect(ui.pushButton_28, SIGNAL(clicked()), this, SLOT(updateWindowsWithCursors()));
 	
 	ui.pushButton_27->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	QObject::connect(ui.pushButton_27, SIGNAL(clicked()), this, SLOT(saveScreen()));
 
-	
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
 	slicesView->addImageActor(riw[1]->GetImageActor(), getTransformMatrix());
@@ -218,4 +218,46 @@ void milxQtImage2::updateWindowsWithCursors()
 		riw[i]->EnableCursor();
 		cursorAct->setChecked(true);
 	}
+}
+
+
+
+void milxQtImage2::saveScreen(QString filename)
+{
+	QFileDialog *fileSaver = new QFileDialog(this);
+	
+	QSettings settings("Shekhar Chandra", "milxQt");
+	QString path = settings.value("recentPath").toString();
+	if (filename.isEmpty())
+	{
+		filename = fileSaver->getSaveFileName(this,
+			tr("Select File Name to Save"),
+			path,
+			tr(saveExtsForScreens.c_str()));
+	}
+
+	QPointer<milxQtFile> writer = new milxQtFile; //Smart deletion
+	vtkSmartPointer<vtkWindowToImageFilter> windowToImage = vtkSmartPointer<vtkWindowToImageFilter>::New();
+	riw[0]->GetRenderWindow()->Render();
+	windowToImage->SetInput(riw[0]->GetRenderWindow());
+	windowToImage->SetMagnification(magnifyFactor);
+	//        windowToImage->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+	windowToImage->ReadFrontBufferOff();
+	windowToImage->Update();
+	//Save screenshot
+	int extent[6];
+	windowToImage->GetOutput()->GetExtent(extent);
+	printDebug("Screenshot Size: " + QString::number(extent[1] - extent[0]) + ", " + QString::number(extent[3] - extent[2]) + ", " + QString::number(extent[5] - extent[4]));
+	bool success = writer->saveImage(filename, windowToImage->GetOutput());
+
+	//        windowVTK->GetRenderWindow()->OffScreenRenderingOff();
+	riw[0]->GetRenderWindow()->Render(); //Restore rendering
+
+	if (!success)
+	{
+		printError("Unable to save screenshot. Ignoring.");
+		return;
+	}
+
+	printInfo("Write Complete.");
 }
