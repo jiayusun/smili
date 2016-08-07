@@ -6,6 +6,7 @@
 #include <QStringList> 
 #include <vtkWindowToImageFilter.h>
 #include "milxQtFile.h"
+#include <QPixmap>
 
 
 
@@ -161,18 +162,29 @@ void milxQtImage2::generateImage(const bool quietly)
 	riw[1]->SetSliceOrientationToXZ();
 	riw[2]->SetSliceOrientationToYZ();
 	
+	ui.actionIntensity->setIcon(QIcon(":/resources/toolbar/intensity.png"));
+	QObject::connect(ui.actionIntensity, SIGNAL(triggered()), this, SLOT(updateWindowsWithAutoLevel()));
 
-	ui.pushButton_30->setIcon(QIcon(":/resources/toolbar/intensity.png"));
-	QObject::connect(ui.pushButton_30, SIGNAL(clicked()), this, SLOT(updateWindowsWithAutoLevel()));
-	
-	ui.pushButton_29->setIcon(QIcon(":/resources/toolbar/refresh.png"));
-	QObject::connect(ui.pushButton_29, SIGNAL(clicked()), this, SLOT(updateWindowsWithRefresh()));
+	ui.actionRefresh->setIcon(QIcon(":/resources/toolbar/refresh.png"));
+	QObject::connect(ui.actionRefresh, SIGNAL(triggered()), this, SLOT(updateWindowsWithRefresh()));
 
-	ui.pushButton_28->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
-	QObject::connect(ui.pushButton_28, SIGNAL(clicked()), this, SLOT(updateWindowsWithCursors()));
+	ui.actionCrosshair->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
+	QObject::connect(ui.actionCrosshair, SIGNAL(triggered()), this, SLOT(updateWindowsWithCursors()));
 	
-	ui.pushButton_27->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
-	QObject::connect(ui.pushButton_27, SIGNAL(clicked()), this, SLOT(saveScreen()));
+	ui.actionSaveScreen4->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	QObject::connect(ui.actionSaveScreen4, SIGNAL(triggered()), this, SLOT(saveScreen()));
+
+	ui.saveScreen_1->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	QObject::connect(ui.saveScreen_1, SIGNAL(clicked()), this, SLOT(saveScreen1()));
+
+	ui.saveScreen_2->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	QObject::connect(ui.saveScreen_2, SIGNAL(clicked()), this, SLOT(saveScreen2()));
+
+	ui.saveScreen_3->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	QObject::connect(ui.saveScreen_3, SIGNAL(clicked()), this, SLOT(saveScreen3()));
+
+	ui.saveScreen_4->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	QObject::connect(ui.saveScreen_4, SIGNAL(clicked()), this, SLOT(saveScreen1()));
 
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
@@ -222,7 +234,7 @@ void milxQtImage2::updateWindowsWithCursors()
 
 
 
-void milxQtImage2::saveScreen(QString filename)
+void milxQtImage2::saveScreen1(QString filename)
 {
 	QFileDialog *fileSaver = new QFileDialog(this);
 	
@@ -260,4 +272,92 @@ void milxQtImage2::saveScreen(QString filename)
 	}
 
 	printInfo("Write Complete.");
+}
+
+
+void milxQtImage2::saveScreen2(QString filename)
+{
+	QFileDialog *fileSaver = new QFileDialog(this);
+
+	QSettings settings("Shekhar Chandra", "milxQt");
+	QString path = settings.value("recentPath").toString();
+	if (filename.isEmpty())
+	{
+		filename = fileSaver->getSaveFileName(this,
+			tr("Select File Name to Save"),
+			path,
+			tr(saveExtsForScreens.c_str()));
+	}
+
+	QPointer<milxQtFile> writer = new milxQtFile; //Smart deletion
+	vtkSmartPointer<vtkWindowToImageFilter> windowToImage = vtkSmartPointer<vtkWindowToImageFilter>::New();
+	riw[1]->GetRenderWindow()->Render();
+	windowToImage->SetInput(riw[1]->GetRenderWindow());
+	windowToImage->SetMagnification(magnifyFactor);
+	//        windowToImage->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+	windowToImage->ReadFrontBufferOff();
+	windowToImage->Update();
+	//Save screenshot
+	int extent[6];
+	windowToImage->GetOutput()->GetExtent(extent);
+	printDebug("Screenshot Size: " + QString::number(extent[1] - extent[0]) + ", " + QString::number(extent[3] - extent[2]) + ", " + QString::number(extent[5] - extent[4]));
+	bool success = writer->saveImage(filename, windowToImage->GetOutput());
+
+	//        windowVTK->GetRenderWindow()->OffScreenRenderingOff();
+	riw[1]->GetRenderWindow()->Render(); //Restore rendering
+
+	if (!success)
+	{
+		printError("Unable to save screenshot. Ignoring.");
+		return;
+	}
+
+	printInfo("Write Complete.");
+}
+
+
+void milxQtImage2::saveScreen3(QString filename)
+{
+	QFileDialog *fileSaver = new QFileDialog(this);
+
+	QSettings settings("Shekhar Chandra", "milxQt");
+	QString path = settings.value("recentPath").toString();
+	if (filename.isEmpty())
+	{
+		filename = fileSaver->getSaveFileName(this,
+			tr("Select File Name to Save"),
+			path,
+			tr(saveExtsForScreens.c_str()));
+	}
+
+	QPointer<milxQtFile> writer = new milxQtFile; //Smart deletion
+	vtkSmartPointer<vtkWindowToImageFilter> windowToImage = vtkSmartPointer<vtkWindowToImageFilter>::New();
+	riw[2]->GetRenderWindow()->Render();
+	windowToImage->SetInput(riw[2]->GetRenderWindow());
+	windowToImage->SetMagnification(magnifyFactor);
+	//        windowToImage->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+	windowToImage->ReadFrontBufferOff();
+	windowToImage->Update();
+	//Save screenshot
+	int extent[6];
+	windowToImage->GetOutput()->GetExtent(extent);
+	printDebug("Screenshot Size: " + QString::number(extent[1] - extent[0]) + ", " + QString::number(extent[3] - extent[2]) + ", " + QString::number(extent[5] - extent[4]));
+	bool success = writer->saveImage(filename, windowToImage->GetOutput());
+
+	//        windowVTK->GetRenderWindow()->OffScreenRenderingOff();
+	riw[2]->GetRenderWindow()->Render(); //Restore rendering
+
+	if (!success)
+	{
+		printError("Unable to save screenshot. Ignoring.");
+		return;
+	}
+
+	printInfo("Write Complete.");
+}
+
+void milxQtImage2::saveScreen()
+{
+	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), pos().x(), pos().y(), frameGeometry().width(), frameGeometry().height());
+	pixmap.save("screen.png", "png");
 }

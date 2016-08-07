@@ -7,6 +7,9 @@
 #include "milxQtMain.h"
 #include "ui_milxQtImage2.h" 
 #include <QPointer>
+#include <QPixmap>
+#include <QApplication>
+#include <QDesktopWidget>
 
 class MILXQT_EXPORT milxQtImage2 : public milxQtImage
 {
@@ -21,7 +24,11 @@ public slots:
 	void updateWindowsWithAutoLevel();
 	void updateWindowsWithRefresh();
 	void updateWindowsWithCursors();
-	void saveScreen(QString filename = "");
+	void saveScreen1(QString filename = "");
+	void saveScreen2(QString filename = "");
+	void saveScreen3(QString filename = "");
+	void saveScreen();
+
 
 protected:
 	Ui_milxQtImage2 ui;
