@@ -183,8 +183,6 @@ void milxQtImage2::generateImage(const bool quietly)
 	ui.saveScreen_3->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(ui.saveScreen_3, SIGNAL(clicked()), this, SLOT(saveScreen3()));
 
-	ui.saveScreen_4->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
-	QObject::connect(ui.saveScreen_4, SIGNAL(clicked()), this, SLOT(saveScreen1()));
 
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
@@ -356,8 +354,19 @@ void milxQtImage2::saveScreen3(QString filename)
 	printInfo("Write Complete.");
 }
 
-void milxQtImage2::saveScreen()
+void milxQtImage2::saveScreen(QString filename)
 {
+	QFileDialog *fileSaver = new QFileDialog(this);
+
+	QSettings settings("Shekhar Chandra", "milxQt");
+	QString path = settings.value("recentPath").toString();
+	if (filename.isEmpty())
+	{
+		filename = fileSaver->getSaveFileName(this,
+			tr("Select File Name to Save"),
+			path,
+			tr(saveExtsForScreens.c_str()));
+	}
 	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), pos().x(), pos().y(), frameGeometry().width(), frameGeometry().height());
-	pixmap.save("screen.png", "png");
+	pixmap.save( filename , "png");
 }

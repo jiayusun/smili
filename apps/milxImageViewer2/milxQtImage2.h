@@ -27,7 +27,7 @@ public slots:
 	void saveScreen1(QString filename = "");
 	void saveScreen2(QString filename = "");
 	void saveScreen3(QString filename = "");
-	void saveScreen();
+	void saveScreen(QString filename = "");
 
 
 protected:
