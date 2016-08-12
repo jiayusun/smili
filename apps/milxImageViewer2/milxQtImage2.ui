@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>milxQtImage2</class>
+ <widget class="QMainWindow" name="milxQtImage2">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>633</width>
+    <height>567</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>633</width>
+    <height>567</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>633</width>
+    <height>567</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>milxQtImage2</string>
+  </property>
+  <property name="toolTip">
+   <string/>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>22</width>
+    <height>22</height>
+   </size>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>591</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="2" column="1">
+      <widget class="QVTKWidget" name="view4"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QVTKWidget" name="view3"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QVTKWidget" name="view2"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QVTKWidget" name="view1"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="saveScreen_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>270</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveScreen_3">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>0</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveScreen_1">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionCrosshair"/>
+   <addaction name="actionRefresh"/>
+   <addaction name="actionIntensity"/>
+   <addaction name="actionSaveScreen4"/>
+  </widget>
+  <action name="actionOpenFile">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open File...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../../Users/Jiayu Sun/Users/Jiayu Sun/.designer/backup</normaloff>../../../Users/Jiayu Sun/Users/Jiayu Sun/.designer/backup</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Icons/print.png</normaloff>:/Icons/print.png</iconset>
+   </property>
+   <property name="text">
+    <string>Print</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Icons/filesave.png</normaloff>:/Icons/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionScalar_Bar">
+   <property name="text">
+    <string>Scalar Bar</string>
+   </property>
+  </action>
+  <action name="actionScalar_Bar_2">
+   <property name="text">
+    <string>Scalar Bar</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionExit_2">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionOperations">
+   <property name="text">
+    <string>Operations</string>
+   </property>
+  </action>
+  <action name="actionThresholds">
+   <property name="text">
+    <string>Thresholds</string>
+   </property>
+  </action>
+  <action name="actionTransforms">
+   <property name="text">
+    <string>Transforms</string>
+   </property>
+  </action>
+  <action name="actionComplex_Vector_4D_Imaging">
+   <property name="text">
+    <string>Complex/Vector/4D Imaging</string>
+   </property>
+  </action>
+  <action name="actionAuto_Level_Display">
+   <property name="text">
+    <string>Auto-Level Display</string>
+   </property>
+  </action>
+  <action name="actionOverlay_Labelled_Image_from">
+   <property name="text">
+    <string>Overlay Labelled Image from...</string>
+   </property>
+  </action>
+  <action name="actionOverlay_Labelled_Image_as_contour_from">
+   <property name="text">
+    <string>Overlay Labelled Image as contour from</string>
+   </property>
+  </action>
+  <action name="actionBlend_image_with">
+   <property name="text">
+    <string>Blend image with...</string>
+   </property>
+  </action>
+  <action name="actionCompare_as_Checkboard_to">
+   <property name="text">
+    <string>Compare as Checkboard to</string>
+   </property>
+  </action>
+  <action name="actionDisplay_as_Volume_Render">
+   <property name="text">
+    <string>Display as Volume Render</string>
+   </property>
+  </action>
+  <action name="actionDisplay_Histogram">
+   <property name="text">
+    <string>Display Histogram</string>
+   </property>
+  </action>
+  <action name="actionDisplay_Slice_Surface_Plot">
+   <property name="text">
+    <string>Display Slice Surface Plot</string>
+   </property>
+  </action>
+  <action name="actionDisplay_Iso_surface">
+   <property name="text">
+    <string>Display Iso-surface</string>
+   </property>
+  </action>
+  <action name="actionImage_Imformation">
+   <property name="text">
+    <string>Image Imformation</string>
+   </property>
+  </action>
+  <action name="actionInterpolation">
+   <property name="text">
+    <string>Interpolation</string>
+   </property>
+  </action>
+  <action name="actionApply_Orientation">
+   <property name="text">
+    <string>Apply Orientation</string>
+   </property>
+  </action>
+  <action name="actionShow_Cursor">
+   <property name="text">
+    <string>Show Cursor</string>
+   </property>
+  </action>
+  <action name="actionShow_Human_Orientation">
+   <property name="text">
+    <string>Show Human Orientation</string>
+   </property>
+  </action>
+  <action name="actionView">
+   <property name="text">
+    <string>View</string>
+   </property>
+  </action>
+  <action name="actionColour_Maps">
+   <property name="text">
+    <string>Colour Maps</string>
+   </property>
+  </action>
+  <action name="actionContour_Mode">
+   <property name="text">
+    <string>Contour Mode</string>
+   </property>
+  </action>
+  <action name="actionCreate_Model_From_Contour">
+   <property name="text">
+    <string>Create Model From Contour</string>
+   </property>
+  </action>
+  <action name="actionSave_Contour">
+   <property name="text">
+    <string>Save Contour</string>
+   </property>
+  </action>
+  <action name="actionLoad_Contour">
+   <property name="text">
+    <string>Load Contour</string>
+   </property>
+  </action>
+  <action name="actionWhite">
+   <property name="text">
+    <string>White Background</string>
+   </property>
+  </action>
+  <action name="actionAxes">
+   <property name="text">
+    <string>Axes</string>
+   </property>
+  </action>
+  <action name="actionTwo_Sided_Lighting">
+   <property name="text">
+    <string>Two-Sided Lighting</string>
+   </property>
+  </action>
+  <action name="actionDraw_Line">
+   <property name="text">
+    <string>Draw Line</string>
+   </property>
+  </action>
+  <action name="actionMeasure_Distance">
+   <property name="text">
+    <string>Measure Distance</string>
+   </property>
+  </action>
+  <action name="actionMeasure_Cross_Distance">
+   <property name="text">
+    <string>Measure Cross Distance</string>
+   </property>
+  </action>
+  <action name="actionMeasure_Angle">
+   <property name="text">
+    <string>Measure Angle</string>
+   </property>
+  </action>
+  <action name="actionDraw_Plane">
+   <property name="text">
+    <string>Draw Plane</string>
+   </property>
+  </action>
+  <action name="actionDraw_Box_Cuboid">
+   <property name="text">
+    <string>Draw Box/Cuboid</string>
+   </property>
+  </action>
+  <action name="actionDraw_Sphere_Circle">
+   <property name="text">
+    <string>Draw Sphere/Circle</string>
+   </property>
+  </action>
+  <action name="actionInsert_Text">
+   <property name="text">
+    <string>Insert Text</string>
+   </property>
+  </action>
+  <action name="actionCrosshair">
+   <property name="text">
+    <string>Crosshair</string>
+   </property>
+  </action>
+  <action name="actionIntensity">
+   <property name="text">
+    <string>Intensity</string>
+   </property>
+   <property name="toolTip">
+    <string>Intensity</string>
+   </property>
+  </action>
+  <action name="actionSaveScreen4">
+   <property name="text">
+    <string>SaveScreen4</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QVTKWidget</class>
+   <extends>QWidget</extends>
+   <header>QVTKWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../../Users/Jiayu Sun/Desktop/New folder/论文软件/Icons/icons.qrc"/>
+  <include location="../../smili.qrc"/>
+ </resources>
+ <connections/>
+</ui>
