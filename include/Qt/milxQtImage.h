@@ -473,6 +473,10 @@ public:
     {
         return viewer->GetRenderWindow()->GetInteractor();
     }
+	virtual void SetupInteractor(vtkRenderWindowInteractor *interactor)
+	{
+		viewer->SetupInteractor(interactor);
+	}
 
     //Flags
     /*!
