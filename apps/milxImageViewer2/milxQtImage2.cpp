@@ -6,7 +6,8 @@
 #include <QStringList> 
 #include <vtkWindowToImageFilter.h>
 #include "milxQtFile.h"
-#include <QPixmap>
+
+
 
 
 
@@ -173,6 +174,10 @@ void milxQtImage2::generateImage(const bool quietly)
 	
 	ui.actionSaveScreen4->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(ui.actionSaveScreen4, SIGNAL(triggered()), this, SLOT(saveScreen()));
+
+	QObject::connect(ui.actionControls, SIGNAL(triggered()), this, SLOT(controls()));
+
+
 
 	ui.saveScreen_1->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(ui.saveScreen_1, SIGNAL(clicked()), this, SLOT(saveScreen1()));
@@ -370,3 +375,17 @@ void milxQtImage2::saveScreen(QString filename)
 	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), pos().x(), pos().y(), frameGeometry().width(), frameGeometry().height());
 	pixmap.save( filename , "png");
 }
+
+void milxQtImage2::controls()
+{
+	printDebug("Showing controls available...");
+	QPixmap pixmap(":resources/controls_splash.png");
+	QSplashScreen *controlsSplash = new QSplashScreen(this);
+	controlsSplash->setPixmap(pixmap);
+	controlsSplash->setMask(pixmap.mask());
+	controlsSplash->show();
+
+	qApp->processEvents();
+}
+
+

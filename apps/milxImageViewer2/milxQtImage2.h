@@ -7,7 +7,6 @@
 #include "milxQtMain.h"
 #include "ui_milxQtImage2.h" 
 #include <QPointer>
-#include <QPixmap>
 #include <QApplication>
 #include <QDesktopWidget>
 
@@ -28,6 +27,7 @@ public slots:
 	void saveScreen2(QString filename = "");
 	void saveScreen3(QString filename = "");
 	void saveScreen(QString filename = "");
+	void controls();
 
 
 protected:
