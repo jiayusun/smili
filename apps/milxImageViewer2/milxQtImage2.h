@@ -28,7 +28,7 @@ public slots:
 	void saveScreen3(QString filename = "");
 	void saveScreen(QString filename = "");
 	void controls();
-
+	void about();
 
 protected:
 	Ui_milxQtImage2 ui;

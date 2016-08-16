@@ -4,7 +4,7 @@ PROJECT(milxImageViewer2 C CXX)
  
 #find libraries
 include(find)
-set( UIs milxQtImage2.ui )
+set( UIs milxQtImage2.ui)
 # 所有的.h文件  
 set (HEADER_FILES milxQtImage2.h)  
   
@@ -37,15 +37,14 @@ FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtWebkit)
 # a CMake script that sets up this directory for building with Qt4
 INCLUDE( ${QT_USE_FILE} )
 
-file(GLOB MILXQT_HEADERS ${LIBRARY_INCLUDE_PATH}/Qt/*.h)
-
+file(GLOB MILXQT_HEADERS ${LIBRARY_INCLUDE_PATH}/Qt/*.h ${SMILI_SOURCE_DIR}/ui/*.h )
+file(GLOB MILXQT_SRC_UIS ${SMILI_SOURCE_DIR}/ui/*.ui)
 # this moc's the above variable and appends to the cxx sources
 QT4_WRAP_CPP(MILXQT_MOCS ${MILXQT_HEADERS})
 QT4_WRAP_CPP(MILXQTIMAGE2_MOCS milxQtImage2.h )
-
 # Add Headers into List
 INCLUDE_DIRECTORIES(${MILXQT_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 LINK_DIRECTORIES(${MILXQT_INSTALL_BINARY_DIR})
-qt4_wrap_ui(UI_Srcs ${UIs})
+qt4_wrap_ui(UI_Srcs ${UIs} ${MILXQT_SRC_UIS})
 ADD_EXECUTABLE(milxImageViewer2 ${SOURCES_FILES} ${MILXQT_MOCS} ${MILXQTIMAGE2_MOCS} ${UI_Srcs})
 TARGET_LINK_LIBRARIES(milxImageViewer2 milx-Qt ${QT_LIBRARIES} milx-SMILI ${VTK_QT_LIBRARIES} ${ITK_LIBRARIES} vtk-ext ${VTK_LIBRARIES} ${ITK_REVIEW_LIBRARIES} ${ZLIB_LIBRARIES})

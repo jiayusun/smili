@@ -114,6 +114,7 @@
    <addaction name="actionIntensity"/>
    <addaction name="actionSaveScreen4"/>
    <addaction name="actionControls"/>
+   <addaction name="actionAbout"/>
   </widget>
   <action name="actionOpenFile">
    <property name="enabled">
@@ -381,9 +382,19 @@
     <string>SaveScreen4</string>
    </property>
   </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
   <action name="actionControls">
    <property name="text">
     <string>Controls</string>
+   </property>
+  </action>
+  <action name="actionMenu">
+   <property name="text">
+    <string>Menu</string>
    </property>
   </action>
  </widget>

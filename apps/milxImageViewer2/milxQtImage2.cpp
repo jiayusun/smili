@@ -6,7 +6,7 @@
 #include <QStringList> 
 #include <vtkWindowToImageFilter.h>
 #include "milxQtFile.h"
-
+#include "milxQtAboutForm.h"
 
 
 
@@ -172,12 +172,14 @@ void milxQtImage2::generateImage(const bool quietly)
 	ui.actionCrosshair->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
 	QObject::connect(ui.actionCrosshair, SIGNAL(triggered()), this, SLOT(updateWindowsWithCursors()));
 	
-	ui.actionSaveScreen4->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
+	ui.actionSaveScreen4->setIcon(QIcon(":/resources/toolbar/screenshot.png")); 
 	QObject::connect(ui.actionSaveScreen4, SIGNAL(triggered()), this, SLOT(saveScreen()));
 
+	ui.actionControls->setIcon(QIcon(":/resources/toolbar/controls.png"));
 	QObject::connect(ui.actionControls, SIGNAL(triggered()), this, SLOT(controls()));
 
-
+	ui.actionAbout->setIcon(QIcon(":/resources/smilx_icon.png"));
+	QObject::connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
 	ui.saveScreen_1->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(ui.saveScreen_1, SIGNAL(clicked()), this, SLOT(saveScreen1()));
@@ -188,6 +190,13 @@ void milxQtImage2::generateImage(const bool quietly)
 	ui.saveScreen_3->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(ui.saveScreen_3, SIGNAL(clicked()), this, SLOT(saveScreen3()));
 
+	QMenu *menu = new QMenu();
+	QAction *actionOpen = new QAction("Open", this);
+	menu->addAction(actionOpen);
+	QToolButton* toolButton = new QToolButton();
+	toolButton->setMenu(menu);
+	toolButton->setPopupMode(QToolButton::InstantPopup);
+	ui.toolBar->addWidget(toolButton);
 
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
@@ -388,4 +397,10 @@ void milxQtImage2::controls()
 	qApp->processEvents();
 }
 
+void milxQtImage2::about()
+{
+	milxQtAboutForm aboutForm(this);
+
+	aboutForm.exec();
+}
 
