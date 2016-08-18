@@ -11,18 +11,45 @@
 
 
 
-milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
+milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem) 
 {
 	ui.setupUi(parent);
-	//ui.view1 = qobject_cast<QVTKWidget*>(this);
-	//ui.view2 = qobject_cast<QVTKWidget*>(this);
-	//ui.view3 = qobject_cast<QVTKWidget*>(this);
-	//ui.view4 = qobject_cast<QVTKWidget*>(this);
 
+	maxProcessors = milx::NumberOfProcessors();
+	if (maxProcessors > 1)
+		maxProcessors = milx::NumberOfProcessors() / 2;
+
+	///Setup Console
+	console = new milxQtConsole;
+	actionConsole = console->dockWidget()->toggleViewAction();
+	actionConsole->setIcon(QIcon(":/resources/toolbar/console.png"));
+	ui.toolBar->addAction(actionConsole);
+	dockActions.append(actionConsole);
+	QObject::connect(console->dockWidget(), SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), console, SLOT(setDockDefaultArea(Qt::DockWidgetArea)));
+	parent->addDockWidget(console->dockDefaultArea(), console->dockWidget());
+	console->show();
+
+	///viewers
 	for (int i = 0; i < 3; i++)
 	{
 		riw[i] = vtkSmartPointer<vtkImageViewer3>::New();
 	}
+
+	///Program Info
+	printInfo("--------------------------------------------------------");
+	printInfo("sMILX Visualisation Tool for Medical Imaging");
+	printInfo("Open Source Release (BSD License)");
+	printInfo("(c) Copyright CSIRO, 2015.");
+	printInfo("University of Queensland, Australia.");
+	printInfo("Australian e-Health Research Centre, CSIRO.");
+	printInfo("SMILI Version: " + QString::number(milx::Version));
+	printInfo("Application Version: " + QString::number(milxQtVersion));
+	printInfo("Processors to be used: " + QString::number(maxProcessors));
+	printInfo("--------------------------------------------------------\n");
+
+	///Style
+
+	update();
 }
 	
 milxQtImage2::~milxQtImage2()
