@@ -28,43 +28,6 @@ public slots:
 	void controls();
 	void about();
 
-	//Print Members
-	/*!
-	\fn milxQtMain::printError(QString msg)
-	\brief Error message wrapper for console.
-	*/
-	inline void printError(QString msg)
-	{
-		console->printError(msg);
-	}
-	//    {   cerr << msg.toStdString() << endl;   }
-	/*!
-	\fn milxQtMain::printWarning(QString msg)
-	\brief Warning message wrapper for console.
-	*/
-	inline void printWarning(QString msg)
-	{
-		console->printWarning(msg);
-	}
-	//    {   cerr << msg.toStdString() << endl;   }
-	/*!
-	\fn milxQtMain::printDebug(QString msg)
-	\brief Debug message wrapper for console.
-	*/
-	inline void printDebug(QString msg)
-	{
-		console->printDebug(msg);
-	}
-	//    {   cerr << msg.toStdString() << endl;   }
-	/*!
-	\fn milxQtMain::printInfo(QString msg)
-	\brief Info message wrapper for console.
-	*/
-	inline void printInfo(QString msg)
-	{
-		console->printInfo(msg);
-	}
-
 protected:
 	Ui_milxQtImage2 ui;
 	vtkSmartPointer<vtkImageViewer3> riw[3];

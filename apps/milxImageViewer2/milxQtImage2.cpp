@@ -35,6 +35,7 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 		riw[i] = vtkSmartPointer<vtkImageViewer3>::New();
 	}
 
+	setConsole(console);
 	///Program Info
 	printInfo("--------------------------------------------------------");
 	printInfo("sMILX Visualisation Tool for Medical Imaging");
@@ -59,7 +60,7 @@ milxQtImage2::~milxQtImage2()
 
 void milxQtImage2::generateImage(const bool quietly)
 {
-
+	setConsole(console);
 	if (loaded)
 	{
 		printDebug("Generating Image");
@@ -226,6 +227,7 @@ void milxQtImage2::generateImage(const bool quietly)
 	ui.toolBar->addWidget(toolButton);
 
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
+	slicesView->setConsole(console);
 	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
 	slicesView->addImageActor(riw[1]->GetImageActor(), getTransformMatrix());
 	slicesView->addImageActor(riw[2]->GetImageActor(), getTransformMatrix());
