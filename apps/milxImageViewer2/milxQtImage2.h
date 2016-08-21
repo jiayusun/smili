@@ -16,7 +16,6 @@ public:
 	milxQtImage2(QMainWindow *parent = 0, bool contextSystem = true);
 	~milxQtImage2();
 	void generateImage(const bool quietly = false);
-
 public slots:
 	void updateWindowsWithAutoLevel();
 	void updateWindowsWithRefresh();
@@ -36,5 +35,6 @@ protected:
 	QAction* actionConsole;
 	QList< QAction* > dockActions; //!< List of dock actions of dock widgets loaded succesfully.
 	QPointer<milxQtConsole> console; //!< console docked window
+	size_t actualNumberOfDimensions;
 };
 #endif

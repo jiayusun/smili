@@ -18,6 +18,7 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 	maxProcessors = milx::NumberOfProcessors();
 	if (maxProcessors > 1)
 		maxProcessors = milx::NumberOfProcessors() / 2;
+	actualNumberOfDimensions = 3;
 
 	///Setup Console
 	console = new milxQtConsole;
@@ -132,22 +133,10 @@ void milxQtImage2::generateImage(const bool quietly)
 
 	//Human Glyph setup
 	setupHumanGlyph(transformMatrix);
-	for (int i = 0; i < 3; i++)
-	{
-		humanGlyph->SetDefaultRenderer(riw[i]->GetRenderer());
-		humanGlyph->SetInteractor(riw[i]->GetRenderWindow()->GetInteractor());
-	}
-	if (actualNumberOfDimensions > 2)
-	{
-		milxQtRenderWindow::humanAct->setEnabled(true);
-		humanGlyph->On();
-	}
-	else
-	{
-		milxQtRenderWindow::humanAct->setEnabled(false);
-		humanGlyph->Off();
-	}
-	//            humanGlyph->InteractiveOn();
+	humanGlyph->SetDefaultRenderer(riw[0]->GetRenderer());
+	humanGlyph->SetInteractor(riw[0]->GetRenderWindow()->GetInteractor());
+	milxQtRenderWindow::humanAct->setEnabled(true);
+	humanGlyph->On();
 
 	//Sphere annotate
 	for (int i = 0; i < 3; i++)
@@ -190,7 +179,15 @@ void milxQtImage2::generateImage(const bool quietly)
 	riw[0]->SetSliceOrientationToXY();
 	riw[1]->SetSliceOrientationToXZ();
 	riw[2]->SetSliceOrientationToYZ();
-	
+
+	QMenu *menu = new QMenu();
+	createMenu(menu);
+	QToolButton* toolButton = new QToolButton();
+	toolButton->setIcon(QIcon(":/resources/toolbar/help.png"));
+	toolButton->setMenu(menu);
+	toolButton->setPopupMode(QToolButton::InstantPopup);
+	ui.toolBar->addWidget(toolButton);
+
 	ui.actionIntensity->setIcon(QIcon(":/resources/toolbar/intensity.png"));
 	QObject::connect(ui.actionIntensity, SIGNAL(triggered()), this, SLOT(updateWindowsWithAutoLevel()));
 
@@ -217,14 +214,6 @@ void milxQtImage2::generateImage(const bool quietly)
 
 	ui.saveScreen_3->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(ui.saveScreen_3, SIGNAL(clicked()), this, SLOT(saveScreen3()));
-
-	QMenu *menu = new QMenu();
-	QAction *actionOpen = new QAction("Open", this);
-	menu->addAction(actionOpen);
-	QToolButton* toolButton = new QToolButton();
-	toolButton->setMenu(menu);
-	toolButton->setPopupMode(QToolButton::InstantPopup);
-	ui.toolBar->addWidget(toolButton);
 
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->setConsole(console);
