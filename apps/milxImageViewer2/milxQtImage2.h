@@ -35,6 +35,5 @@ protected:
 	QAction* actionConsole;
 	QList< QAction* > dockActions; //!< List of dock actions of dock widgets loaded succesfully.
 	QPointer<milxQtConsole> console; //!< console docked window
-	size_t actualNumberOfDimensions;
 };
 #endif
