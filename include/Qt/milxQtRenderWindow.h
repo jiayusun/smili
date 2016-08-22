@@ -83,6 +83,7 @@ public:
         return pPixmapLabel;
     }
 
+
 private:
     QLabel *pLabel;
     QLabel *pPixmapLabel;
@@ -138,7 +139,10 @@ public:
         \brief The standard destructor
     */
     virtual ~milxQtRenderWindow();
-
+	
+	vtkSmartPointer<vtkOrientationMarkerWidget> getHumanGlyph(){
+		return humanGlyph;
+	}
     /*!
         \fn milxQtRenderWindow::contextMenuSystem(bool context)
         \brief Disable/enable context menu system, should be on by default otherwise VTK will steal all right click events.
@@ -148,7 +152,6 @@ public:
         WARNING: Use this caarefully and straight after creation.
     */
     void contextMenuSystem(bool context);
-
     /*!
         \fn milxQtRenderWindow::AddActor(vtkSmartPointer<vtkProp> actor)
         \brief Add a VTK actor to this window.
