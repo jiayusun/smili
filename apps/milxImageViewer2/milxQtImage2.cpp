@@ -131,22 +131,23 @@ void milxQtImage2::generateImage(const bool quietly)
 			}
 
 			//Human Glyph setup
-			setupHumanGlyph(transformMatrix);
-			for (int i = 0; i < 3; i++)
-			{
-				humanGlyph->SetDefaultRenderer(riw[i]->GetRenderer());
-				humanGlyph->SetInteractor(riw[i]->GetRenderWindow()->GetInteractor());
+			
+			for (int i = 0; i < 3; i++){
+				view[i] = new milxQtRenderWindow;  //list deletion
+				view[i]->getHumanGlyph()->SetDefaultRenderer(riw[i]->GetRenderer());
+				view[i]->getHumanGlyph()->SetInteractor(riw[i]->GetRenderWindow()->GetInteractor());
+				if (actualNumberOfDimensions > 2)
+				{
+					milxQtRenderWindow::humanAct->setEnabled(true);
+					view[i]->getHumanGlyph()->On();
+				}
+				else
+				{
+					milxQtRenderWindow::humanAct->setEnabled(false);
+					view[i]->getHumanGlyph()->Off();
+				}
 			}
-			if (actualNumberOfDimensions > 2)
-			{
-				milxQtRenderWindow::humanAct->setEnabled(true);
-				humanGlyph->On();
-			}
-			else
-			{
-				milxQtRenderWindow::humanAct->setEnabled(false);
-				humanGlyph->Off();
-			}
+			
 			//            humanGlyph->InteractiveOn();
 
 			//Sphere annotate

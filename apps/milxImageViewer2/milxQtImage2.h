@@ -35,5 +35,6 @@ protected:
 	QAction* actionConsole;
 	QList< QAction* > dockActions; //!< List of dock actions of dock widgets loaded succesfully.
 	QPointer<milxQtConsole> console; //!< console docked window
+	QPointer<milxQtRenderWindow> view[3];  //list deletion
 };
 #endif
