@@ -16,12 +16,6 @@
     <height>673</height>
    </size>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>633</width>
-    <height>673</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>milxQtImage2</string>
   </property>
@@ -48,14 +42,14 @@
      <item row="2" column="1">
       <widget class="QVTKWidget" name="view4"/>
      </item>
+     <item row="1" column="0">
+      <widget class="QVTKWidget" name="view1"/>
+     </item>
      <item row="1" column="1">
       <widget class="QVTKWidget" name="view3"/>
      </item>
      <item row="2" column="0">
       <widget class="QVTKWidget" name="view2"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QVTKWidget" name="view1"/>
      </item>
     </layout>
    </widget>
@@ -90,6 +84,45 @@
      <rect>
       <x>0</x>
       <y>0</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="viewButton1">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="viewButton2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>300</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="viewButton3">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>30</y>
       <width>21</width>
       <height>23</height>
      </rect>

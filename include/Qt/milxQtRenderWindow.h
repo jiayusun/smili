@@ -140,7 +140,8 @@ public:
     */
     virtual ~milxQtRenderWindow();
 	
-	vtkSmartPointer<vtkOrientationMarkerWidget> getHumanGlyph(){
+	vtkSmartPointer<vtkOrientationMarkerWidget> getHumanGlyph()
+	{
 		return humanGlyph;
 	}
     /*!

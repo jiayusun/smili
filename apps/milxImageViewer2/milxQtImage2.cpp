@@ -201,6 +201,90 @@ void milxQtImage2::generateImage(const bool quietly)
 	toolButton->setPopupMode(QToolButton::InstantPopup);
 	ui.toolBar->addWidget(toolButton);
 
+	view1XY = new QAction(this);
+	view1XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
+	view1XY->setShortcut(tr("Alt+a"));
+	view1XY->setCheckable(true);
+	view1XY->setChecked(true);
+	view1ZX = new QAction(this);
+	view1ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
+	view1ZX->setShortcut(tr("Alt+c"));
+	view1ZX->setCheckable(true);
+	view1ZY = new QAction(this);
+	view1ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
+	view1ZY->setShortcut(tr("Alt+s"));
+	view1ZY->setCheckable(true);
+	view1Group = new QActionGroup(this);
+	view1Group->addAction(view1XY);
+	view1Group->addAction(view1ZX);
+	view1Group->addAction(view1ZY);
+
+	view1Menu = new QMenu(this);
+	view1Menu->addAction(view1XY);
+	view1Menu->addAction(view1ZX);
+	view1Menu->addAction(view1ZY);
+	ui.viewButton1->setMenu(view1Menu);
+
+	connect(view1XY, SIGNAL(triggered()), this, SLOT(view1ToXYPlane()));
+	connect(view1ZX, SIGNAL(triggered()), this, SLOT(view1ToZXPlane()));
+	connect(view1ZY, SIGNAL(triggered()), this, SLOT(view1ToZYPlane()));
+
+	view2XY = new QAction(this);
+	view2XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
+	view2XY->setShortcut(tr("Alt+a"));
+	view2XY->setCheckable(true);
+	view2ZX = new QAction(this);
+	view2ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
+	view2ZX->setShortcut(tr("Alt+c"));
+	view2ZX->setCheckable(true);
+	view2ZX->setChecked(true);
+	view2ZY = new QAction(this);
+	view2ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
+	view2ZY->setShortcut(tr("Alt+s"));
+	view2ZY->setCheckable(true);
+	view2Group = new QActionGroup(this);
+	view2Group->addAction(view2XY);
+	view2Group->addAction(view2ZX);
+	view2Group->addAction(view2ZY);
+
+	view2Menu = new QMenu(this);
+	view2Menu->addAction(view2XY);
+	view2Menu->addAction(view2ZX);
+	view2Menu->addAction(view2ZY);
+	ui.viewButton2->setMenu(view2Menu);
+
+	connect(view2XY, SIGNAL(triggered()), this, SLOT(view2ToXYPlane()));
+	connect(view2ZX, SIGNAL(triggered()), this, SLOT(view2ToZXPlane()));
+	connect(view2ZY, SIGNAL(triggered()), this, SLOT(view2ToZYPlane()));
+
+	view3XY = new QAction(this);
+	view3XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
+	view3XY->setShortcut(tr("Alt+a"));
+	view3XY->setCheckable(true);
+	view3ZX = new QAction(this);
+	view3ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
+	view3ZX->setShortcut(tr("Alt+c"));
+	view3ZX->setCheckable(true);
+	view3ZY = new QAction(this);
+	view3ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
+	view3ZY->setShortcut(tr("Alt+s"));
+	view3ZY->setCheckable(true);
+	view3ZY->setChecked(true);
+	view3Group = new QActionGroup(this);
+	view3Group->addAction(view3XY);
+	view3Group->addAction(view3ZX);
+	view3Group->addAction(view3ZY);
+
+	view3Menu = new QMenu(this);
+	view3Menu->addAction(view3XY);
+	view3Menu->addAction(view3ZX);
+	view3Menu->addAction(view3ZY);
+	ui.viewButton3->setMenu(view3Menu);
+
+	connect(view3XY, SIGNAL(triggered()), this, SLOT(view3ToXYPlane()));
+	connect(view3ZX, SIGNAL(triggered()), this, SLOT(view3ToZXPlane()));
+	connect(view3ZY, SIGNAL(triggered()), this, SLOT(view3ToZYPlane()));
+
 	ui.actionIntensity->setIcon(QIcon(":/resources/toolbar/intensity.png"));
 	QObject::connect(ui.actionIntensity, SIGNAL(triggered()), this, SLOT(updateWindowsWithAutoLevel()));
 
@@ -435,3 +519,83 @@ void milxQtImage2::about()
 	aboutForm.exec();
 }
 
+void milxQtImage2::view1ToXYPlane()
+{
+	if (viewerSetup)
+	{
+		riw[0]->SetSliceOrientationToXY();
+		currentView = AXIAL;
+	}
+}
+
+void milxQtImage2::view1ToZXPlane()
+{
+	if (viewerSetup)
+	{
+		riw[0]->SetSliceOrientationToXZ();
+		currentView = CORONAL;
+	}
+}
+
+void milxQtImage2::view1ToZYPlane()
+{
+	if (viewerSetup)
+	{
+		riw[0]->SetSliceOrientationToYZ();
+		currentView = SAGITTAL;
+	}
+}
+
+void milxQtImage2::view2ToXYPlane()
+{
+	if (viewerSetup)
+	{
+		riw[1]->SetSliceOrientationToXY();
+		currentView = AXIAL;
+	}
+}
+
+void milxQtImage2::view2ToZXPlane()
+{
+	if (viewerSetup)
+	{
+		riw[1]->SetSliceOrientationToXZ();
+		currentView = CORONAL;
+	}
+}
+
+void milxQtImage2::view2ToZYPlane()
+{
+	if (viewerSetup)
+	{
+		riw[1]->SetSliceOrientationToYZ();
+		currentView = SAGITTAL;
+	}
+}
+
+void milxQtImage2::view3ToXYPlane()
+{
+	if (viewerSetup)
+	{
+		riw[2]->SetSliceOrientationToXY();
+		currentView = AXIAL;
+	}
+}
+
+void milxQtImage2::view3ToZXPlane()
+{
+	if (viewerSetup)
+	{
+		riw[2]->SetSliceOrientationToXZ();
+		currentView = CORONAL;
+	}
+}
+
+void milxQtImage2::view3ToZYPlane()
+{
+	if (viewerSetup)
+	{
+		riw[2]->SetSliceOrientationToYZ();
+		currentView = SAGITTAL;
+	}
+}
