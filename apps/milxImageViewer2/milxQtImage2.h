@@ -7,6 +7,7 @@
 #include "ui_milxQtImage2.h" 
 #include <QPointer>
 #include <QDesktopWidget>
+#include <QCloseEvent>
 
 class MILXQT_EXPORT milxQtImage2 : public milxQtImage
 {
@@ -16,6 +17,7 @@ public:
 	milxQtImage2(QMainWindow *parent = 0, bool contextSystem = true);
 	~milxQtImage2();
 	void generateImage(const bool quietly = false);
+	void readSettings();
 public slots:
 	void updateWindowsWithAutoLevel();
 	void updateWindowsWithRefresh();
@@ -35,12 +37,18 @@ public slots:
 	void view3ToXYPlane();
 	void view3ToZXPlane();
 	void view3ToZYPlane();
-
+	void writeSettings();
 protected:
 	Ui_milxQtImage2 ui;
 	vtkSmartPointer<vtkImageViewer3> riw[3];
+	int currentView[3];
+	int index[3];
+	int defaultViewMode[3];
 	int maxProcessors; //!< Max processors to use
 	int magnifyFactor = 2;
+	int currentView1;
+	int currentView2;
+	int currentView3;
 	QAction* actionConsole;
 	QList< QAction* > dockActions; //!< List of dock actions of dock widgets loaded succesfully.
 	QPointer<milxQtConsole> console; //!< console docked window
@@ -60,6 +68,7 @@ protected:
 	QAction* view3XY; //!< Change view to xy-plane (Axial)
 	QAction* view3ZY; //!< Change view to zy-plane (Coronal)
 	QAction* view3ZX; //!< Change view to zx-plane (Sagittal)
-
+	
+	
 };
 #endif

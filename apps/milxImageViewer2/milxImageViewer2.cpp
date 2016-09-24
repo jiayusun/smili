@@ -24,11 +24,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc,argv);
-    QMainWindow mainWindow;
+	QApplication *app = new QApplication(argc, argv);
+	QMainWindow *mainWindow = new QMainWindow;
 	
     QPixmap icon(":resources/smilx_icon.png");
-    app.setWindowIcon(QIcon(icon));
+    app->setWindowIcon(QIcon(icon));
 
     if (argc < 2)
     {
@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
     std::string inputSurfaceFilename = argv[1];
 
     //Load the vertex table from CSV file
-    milxQtImage2 *image = new milxQtImage2(&mainWindow); //app takes ownership so need to be on stack, not heap
-    milxQtFile *reader = new milxQtFile(&mainWindow);
+    milxQtImage2 *image = new milxQtImage2(mainWindow); //app takes ownership so need to be on stack, not heap
+    milxQtFile *reader = new milxQtFile(mainWindow);
     bool success = reader->openImage(inputSurfaceFilename.c_str(), image);
 
     if(!success)
@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
     int newHeight = 633;
     int xOffset = (desktopSize.width()-newWidth)/2.0;
     int yOffset = (desktopSize.height()-newHeight)/2.0;
-    mainWindow.resize( QSize(newWidth, newHeight) );
-    mainWindow.move( QPoint(xOffset, yOffset) );
+    mainWindow->resize( QSize(newWidth, newHeight) );
+    mainWindow->move( QPoint(xOffset, yOffset) );
 	/*
     //Setup view to match sMILX
     QSettings settings("Shekhar Chandra", "milxQt");
@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
     QObject::connect(actionExit, SIGNAL(activated()), &mainWindow, SLOT(close()));
     mainWindow.setMenuBar(menuBar);
     */
-    mainWindow.setWindowTitle("milxImageViewer2");
-    mainWindow.show();
-
-    return app.exec();
+    mainWindow->setWindowTitle("milxImageViewer2");
+    mainWindow->show();
+	QObject::connect(app, SIGNAL(aboutToQuit()), image, SLOT(writeSettings()));
+    return app->exec();
 }

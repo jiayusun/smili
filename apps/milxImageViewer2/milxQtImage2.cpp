@@ -10,11 +10,9 @@
 
 
 
-
 milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem) 
 {
 	ui.setupUi(parent);
-
 	maxProcessors = milx::NumberOfProcessors();
 	if (maxProcessors > 1)
 		maxProcessors = milx::NumberOfProcessors() / 2;
@@ -28,7 +26,7 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 	QObject::connect(console->dockWidget(), SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), console, SLOT(setDockDefaultArea(Qt::DockWidgetArea)));
 	parent->addDockWidget(console->dockDefaultArea(), console->dockWidget());
 	console->show();
-
+	readSettings();
 	///viewers
 	for (int i = 0; i < 3; i++)
 	{
@@ -188,11 +186,6 @@ void milxQtImage2::generateImage(const bool quietly)
 	//riw[1]->SetInputData(GetOutput());
 	//ui.view1->SetRenderWindow(GetRenderWindow());
 	//SetupInteractor(ui.view1->GetRenderWindow()->GetInteractor());
-	riw[0]->SetSliceOrientationToXY();
-	riw[1]->SetSliceOrientationToXZ();
-	riw[2]->SetSliceOrientationToYZ();
-
-
 	QMenu *menu = new QMenu();
 	createMenu(menu);
 	QToolButton* toolButton = new QToolButton();
@@ -205,7 +198,6 @@ void milxQtImage2::generateImage(const bool quietly)
 	view1XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
 	view1XY->setShortcut(tr("Alt+a"));
 	view1XY->setCheckable(true);
-	view1XY->setChecked(true);
 	view1ZX = new QAction(this);
 	view1ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
 	view1ZX->setShortcut(tr("Alt+c"));
@@ -237,7 +229,6 @@ void milxQtImage2::generateImage(const bool quietly)
 	view2ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
 	view2ZX->setShortcut(tr("Alt+c"));
 	view2ZX->setCheckable(true);
-	view2ZX->setChecked(true);
 	view2ZY = new QAction(this);
 	view2ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
 	view2ZY->setShortcut(tr("Alt+s"));
@@ -269,7 +260,6 @@ void milxQtImage2::generateImage(const bool quietly)
 	view3ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
 	view3ZY->setShortcut(tr("Alt+s"));
 	view3ZY->setCheckable(true);
-	view3ZY->setChecked(true);
 	view3Group = new QActionGroup(this);
 	view3Group->addAction(view3XY);
 	view3Group->addAction(view3ZX);
@@ -284,6 +274,52 @@ void milxQtImage2::generateImage(const bool quietly)
 	connect(view3XY, SIGNAL(triggered()), this, SLOT(view3ToXYPlane()));
 	connect(view3ZX, SIGNAL(triggered()), this, SLOT(view3ToZXPlane()));
 	connect(view3ZY, SIGNAL(triggered()), this, SLOT(view3ToZYPlane()));
+
+	if (index[0] == 0)
+	{
+		view1ToXYPlane();
+		view1XY->setChecked(true);
+	}
+	else if (index[0] == 1)
+	{
+		view1ToZXPlane();
+		view1ZX->setChecked(true);
+	}
+	else if (index[0] == 2)
+	{
+		view1ToZYPlane();
+		view1ZY->setChecked(true);
+	}
+	if (index[1] == 0)
+	{
+		view2ToXYPlane();
+		view2XY->setChecked(true);
+	}
+	else if (index[1] == 1)
+	{
+		view2ToZXPlane();
+		view2ZX->setChecked(true);
+	}
+	else if (index[1] == 2)
+	{
+		view2ToZYPlane();
+		view2ZX->setChecked(true);
+	}
+	if (index[2] == 0)
+	{
+		view3ToXYPlane();
+		view3XY->setChecked(true);
+	}
+	else if (index[2] == 1)
+	{
+		view3ToZXPlane();
+		view3ZX->setChecked(true);
+	}
+	else if (index[2] == 2)
+	{
+		view3ToZYPlane();
+		view3ZY->setChecked(true);
+	}
 
 	ui.actionIntensity->setIcon(QIcon(":/resources/toolbar/intensity.png"));
 	QObject::connect(ui.actionIntensity, SIGNAL(triggered()), this, SLOT(updateWindowsWithAutoLevel()));
@@ -483,6 +519,7 @@ void milxQtImage2::saveScreen3(QString filename)
 	printInfo("Write Complete.");
 }
 
+
 void milxQtImage2::saveScreen(QString filename)
 {
 	QFileDialog *fileSaver = new QFileDialog(this);
@@ -524,7 +561,7 @@ void milxQtImage2::view1ToXYPlane()
 	if (viewerSetup)
 	{
 		riw[0]->SetSliceOrientationToXY();
-		currentView = AXIAL;
+		currentView[0] = AXIAL;
 	}
 }
 
@@ -533,8 +570,9 @@ void milxQtImage2::view1ToZXPlane()
 	if (viewerSetup)
 	{
 		riw[0]->SetSliceOrientationToXZ();
-		currentView = CORONAL;
+		currentView[0] = CORONAL;
 	}
+
 }
 
 void milxQtImage2::view1ToZYPlane()
@@ -542,7 +580,7 @@ void milxQtImage2::view1ToZYPlane()
 	if (viewerSetup)
 	{
 		riw[0]->SetSliceOrientationToYZ();
-		currentView = SAGITTAL;
+		currentView[0] = SAGITTAL;
 	}
 }
 
@@ -551,7 +589,7 @@ void milxQtImage2::view2ToXYPlane()
 	if (viewerSetup)
 	{
 		riw[1]->SetSliceOrientationToXY();
-		currentView = AXIAL;
+		currentView[1] = AXIAL;
 	}
 }
 
@@ -560,7 +598,7 @@ void milxQtImage2::view2ToZXPlane()
 	if (viewerSetup)
 	{
 		riw[1]->SetSliceOrientationToXZ();
-		currentView = CORONAL;
+		currentView[1] = CORONAL;
 	}
 }
 
@@ -569,7 +607,7 @@ void milxQtImage2::view2ToZYPlane()
 	if (viewerSetup)
 	{
 		riw[1]->SetSliceOrientationToYZ();
-		currentView = SAGITTAL;
+		currentView[1] = SAGITTAL;
 	}
 }
 
@@ -578,7 +616,7 @@ void milxQtImage2::view3ToXYPlane()
 	if (viewerSetup)
 	{
 		riw[2]->SetSliceOrientationToXY();
-		currentView = AXIAL;
+		currentView[2] = AXIAL;
 	}
 }
 
@@ -587,7 +625,7 @@ void milxQtImage2::view3ToZXPlane()
 	if (viewerSetup)
 	{
 		riw[2]->SetSliceOrientationToXZ();
-		currentView = CORONAL;
+		currentView[2] = CORONAL;
 	}
 }
 
@@ -596,6 +634,47 @@ void milxQtImage2::view3ToZYPlane()
 	if (viewerSetup)
 	{
 		riw[2]->SetSliceOrientationToYZ();
-		currentView = SAGITTAL;
+		currentView[2] = SAGITTAL;
 	}
 }
+
+
+void milxQtImage2::readSettings()
+{
+	QSettings settings("Shekhar Chandra", "milxQt");
+	for (int i = 0; i < 3; i++)
+	{
+		defaultViewMode[i] = i;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		index[i] = settings.value("defaultView" + QString::number(i), defaultViewMode[i]).toInt();
+	}
+	printDebug("ReadSettings");
+	//use value in view to set view in viewer
+}
+
+void milxQtImage2::writeSettings()
+{
+	QSettings settings("Shekhar Chandra", "milxQt");
+	for (int i = 0; i < 3; i++)
+	{
+		if (currentView[i] == AXIAL)
+		{
+			settings.setValue("defaultView" + QString::number(i), 0);
+		}
+		else if (currentView[i] == CORONAL)
+		{
+			settings.setValue("defaultView" + QString::number(i), 1);
+		}
+		else if (currentView[i] == SAGITTAL)
+		{
+			settings.setValue("defaultView" + QString::number(i), 2);
+		}
+	}
+	printDebug("saveSetting");
+}
+
+
+
