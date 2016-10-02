@@ -82,6 +82,9 @@ int main(int argc, char *argv[])
     */
     mainWindow->setWindowTitle("milxImageViewer2");
     mainWindow->show();
-	QObject::connect(app, SIGNAL(aboutToQuit()), image, SLOT(writeSettings()));
+	QSignalMapper* mapper = new QSignalMapper;
+	mapper->setMapping(app, mainWindow);
+	QObject::connect(app, SIGNAL(aboutToQuit()),mapper, SLOT(map()));
+	QObject::connect(mapper, SIGNAL(mapped(QWidget*)), image, SLOT(writeSettings(QWidget*)));
     return app->exec();
 }

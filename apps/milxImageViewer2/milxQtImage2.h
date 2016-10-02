@@ -7,7 +7,6 @@
 #include "ui_milxQtImage2.h" 
 #include <QPointer>
 #include <QDesktopWidget>
-#include <QCloseEvent>
 
 class MILXQT_EXPORT milxQtImage2 : public milxQtImage
 {
@@ -17,7 +16,7 @@ public:
 	milxQtImage2(QMainWindow *parent = 0, bool contextSystem = true);
 	~milxQtImage2();
 	void generateImage(const bool quietly = false);
-	void readSettings();
+	void readSettings(QMainWindow *parent = 0);
 public slots:
 	void updateWindowsWithAutoLevel();
 	void updateWindowsWithRefresh();
@@ -37,7 +36,7 @@ public slots:
 	void view3ToXYPlane();
 	void view3ToZXPlane();
 	void view3ToZYPlane();
-	void writeSettings();
+	void writeSettings(QWidget *parent = 0);
 protected:
 	Ui_milxQtImage2 ui;
 	vtkSmartPointer<vtkImageViewer3> riw[3];
@@ -49,6 +48,7 @@ protected:
 	int currentView1;
 	int currentView2;
 	int currentView3;
+	bool timestamping; //!< Prefer showing timestamp?
 	QAction* actionConsole;
 	QList< QAction* > dockActions; //!< List of dock actions of dock widgets loaded succesfully.
 	QPointer<milxQtConsole> console; //!< console docked window

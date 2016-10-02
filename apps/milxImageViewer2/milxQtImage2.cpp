@@ -16,7 +16,7 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 	maxProcessors = milx::NumberOfProcessors();
 	if (maxProcessors > 1)
 		maxProcessors = milx::NumberOfProcessors() / 2;
-
+	timestamping = true;
 	///Setup Console
 	console = new milxQtConsole;
 	actionConsole = console->dockWidget()->toggleViewAction();
@@ -26,7 +26,7 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 	QObject::connect(console->dockWidget(), SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), console, SLOT(setDockDefaultArea(Qt::DockWidgetArea)));
 	parent->addDockWidget(console->dockDefaultArea(), console->dockWidget());
 	console->show();
-	readSettings();
+	readSettings(parent);
 	///viewers
 	for (int i = 0; i < 3; i++)
 	{
@@ -639,9 +639,13 @@ void milxQtImage2::view3ToZYPlane()
 }
 
 
-void milxQtImage2::readSettings()
+void milxQtImage2::readSettings(QMainWindow *parent)
 {
 	QSettings settings("Shekhar Chandra", "milxQt");
+
+	settings.beginGroup("milxQtImage2");
+	restoreGeometry(settings.value("geometry").toByteArray());
+	parent->restoreState(settings.value("windowState").toByteArray());
 	for (int i = 0; i < 3; i++)
 	{
 		defaultViewMode[i] = i;
@@ -651,13 +655,23 @@ void milxQtImage2::readSettings()
 	{
 		index[i] = settings.value("defaultView" + QString::number(i), defaultViewMode[i]).toInt();
 	}
+
+	timestamping = settings.value("timestamping", timestamping).toBool();
+	///Handle saving dock positions/areas etc.
+	console->setTimestamps(timestamping);
+	settings.endGroup();
+	parent->restoreDockWidget(console->dockWidget());
 	printDebug("ReadSettings");
 	//use value in view to set view in viewer
 }
 
-void milxQtImage2::writeSettings()
+void milxQtImage2::writeSettings(QWidget *parent)
 {
 	QSettings settings("Shekhar Chandra", "milxQt");
+	settings.beginGroup("milxQtImage2");
+	settings.setValue("geometry", saveGeometry());
+	QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parent);
+	settings.setValue("windowState", mainWindow->saveState());
 	for (int i = 0; i < 3; i++)
 	{
 		if (currentView[i] == AXIAL)
@@ -673,8 +687,8 @@ void milxQtImage2::writeSettings()
 			settings.setValue("defaultView" + QString::number(i), 2);
 		}
 	}
+
+	settings.setValue("timestamping", timestamping);
+	settings.endGroup();
 	printDebug("saveSetting");
 }
-
-
-
