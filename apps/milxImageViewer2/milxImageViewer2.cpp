@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
     
     //Setup size
     QSize desktopSize = qApp->desktop()->availableGeometry().size();
-    int newWidth = 567;
-    int newHeight = 633;
+    int newWidth = 633;
+    int newHeight = 585;
     int xOffset = (desktopSize.width()-newWidth)/2.0;
     int yOffset = (desktopSize.height()-newHeight)/2.0;
     mainWindow->resize( QSize(newWidth, newHeight) );

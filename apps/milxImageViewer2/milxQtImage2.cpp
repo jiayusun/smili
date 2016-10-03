@@ -638,33 +638,6 @@ void milxQtImage2::view3ToZYPlane()
 	}
 }
 
-
-void milxQtImage2::readSettings(QMainWindow *parent)
-{
-	QSettings settings("Shekhar Chandra", "milxQt");
-
-	settings.beginGroup("milxQtImage2");
-	restoreGeometry(settings.value("geometry").toByteArray());
-	parent->restoreState(settings.value("windowState").toByteArray());
-	for (int i = 0; i < 3; i++)
-	{
-		defaultViewMode[i] = i;
-	}
-
-	for (int i = 0; i < 3; i++)
-	{
-		index[i] = settings.value("defaultView" + QString::number(i), defaultViewMode[i]).toInt();
-	}
-
-	timestamping = settings.value("timestamping", timestamping).toBool();
-	///Handle saving dock positions/areas etc.
-	console->setTimestamps(timestamping);
-	settings.endGroup();
-	parent->restoreDockWidget(console->dockWidget());
-	printDebug("ReadSettings");
-	//use value in view to set view in viewer
-}
-
 void milxQtImage2::writeSettings(QWidget *parent)
 {
 	QSettings settings("Shekhar Chandra", "milxQt");
@@ -692,3 +665,30 @@ void milxQtImage2::writeSettings(QWidget *parent)
 	settings.endGroup();
 	printDebug("saveSetting");
 }
+
+void milxQtImage2::readSettings(QMainWindow *parent)
+{
+	QSettings settings("Shekhar Chandra", "milxQt");
+
+	settings.beginGroup("milxQtImage2");
+	restoreGeometry(settings.value("geometry").toByteArray());
+	parent->restoreState(settings.value("windowState").toByteArray());
+	for (int i = 0; i < 3; i++)
+	{
+		defaultViewMode[i] = i;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		index[i] = settings.value("defaultView" + QString::number(i), defaultViewMode[i]).toInt();
+	}
+
+	timestamping = settings.value("timestamping", timestamping).toBool();
+	///Handle saving dock positions/areas etc.
+	console->setTimestamps(timestamping);
+	settings.endGroup();
+	parent->restoreDockWidget(console->dockWidget());
+	printDebug("ReadSettings");
+	//use value in view to set view in viewer
+}
+
