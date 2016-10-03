@@ -16,7 +16,6 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem)
 	maxProcessors = milx::NumberOfProcessors();
 	if (maxProcessors > 1)
 		maxProcessors = milx::NumberOfProcessors() / 2;
-	timestamping = true;
 	///Setup Console
 	console = new milxQtConsole;
 	actionConsole = console->dockWidget()->toggleViewAction();
@@ -129,7 +128,7 @@ void milxQtImage2::generateImage(const bool quietly)
 			}
 
 			//Human Glyph setup
-			
+
 			for (int i = 0; i < 3; i++){
 				view[i] = new milxQtRenderWindow;  //list deletion
 				view[i]->getHumanGlyph()->SetDefaultRenderer(riw[i]->GetRenderer());
@@ -145,7 +144,7 @@ void milxQtImage2::generateImage(const bool quietly)
 					view[i]->getHumanGlyph()->Off();
 				}
 			}
-			
+
 			//            humanGlyph->InteractiveOn();
 
 			//Sphere annotate
@@ -182,143 +181,104 @@ void milxQtImage2::generateImage(const bool quietly)
 		emit done(-1);
 	}
 	printDebug("Completed Generating Image");
-	//riw[0]->SetInputData(GetOutput());
-	//riw[1]->SetInputData(GetOutput());
-	//ui.view1->SetRenderWindow(GetRenderWindow());
-	//SetupInteractor(ui.view1->GetRenderWindow()->GetInteractor());
-	QMenu *menu = new QMenu();
-	createMenu(menu);
-	QToolButton* toolButton = new QToolButton();
-	toolButton->setIcon(QIcon(":/resources/toolbar/help.png"));
-	toolButton->setMenu(menu);
-	toolButton->setPopupMode(QToolButton::InstantPopup);
-	ui.toolBar->addWidget(toolButton);
 
-	view1XY = new QAction(this);
-	view1XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
-	view1XY->setShortcut(tr("Alt+a"));
-	view1XY->setCheckable(true);
-	view1ZX = new QAction(this);
-	view1ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
-	view1ZX->setShortcut(tr("Alt+c"));
-	view1ZX->setCheckable(true);
-	view1ZY = new QAction(this);
-	view1ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
-	view1ZY->setShortcut(tr("Alt+s"));
-	view1ZY->setCheckable(true);
-	view1Group = new QActionGroup(this);
-	view1Group->addAction(view1XY);
-	view1Group->addAction(view1ZX);
-	view1Group->addAction(view1ZY);
+	for (int i = 0; i < 3; i++)
+	{
+		viewXY[i] = new QAction(this);
+		viewXY[i]->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
+		viewXY[i]->setShortcut(tr("Alt+a"));
+		viewXY[i]->setCheckable(true);
+		viewZX[i] = new QAction(this);
+		viewZX[i]->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
+		viewZX[i]->setShortcut(tr("Alt+c"));
+		viewZX[i]->setCheckable(true);
+		viewZY[i] = new QAction(this);
+		viewZY[i]->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
+		viewZY[i]->setShortcut(tr("Alt+s"));
+		viewZY[i]->setCheckable(true);
+		viewGroup[i] = new QActionGroup(this);
+		viewGroup[i]->addAction(viewXY[i]);
+		viewGroup[i]->addAction(viewZX[i]);
+		viewGroup[i]->addAction(viewZY[i]);
+		viewMenu[i] = new QMenu(this);
+		viewMenu[i]->addAction(viewXY[i]);
+		viewMenu[i]->addAction(viewZX[i]);
+		viewMenu[i]->addAction(viewZY[i]);
 
-	view1Menu = new QMenu(this);
-	view1Menu->addAction(view1XY);
-	view1Menu->addAction(view1ZX);
-	view1Menu->addAction(view1ZY);
-	ui.viewButton1->setMenu(view1Menu);
+	}
+	ui.viewButton1->setMenu(viewMenu[0]);
+	ui.viewButton2->setMenu(viewMenu[1]);
+	ui.viewButton3->setMenu(viewMenu[2]);
 
-	connect(view1XY, SIGNAL(triggered()), this, SLOT(view1ToXYPlane()));
-	connect(view1ZX, SIGNAL(triggered()), this, SLOT(view1ToZXPlane()));
-	connect(view1ZY, SIGNAL(triggered()), this, SLOT(view1ToZYPlane()));
+	QSignalMapper* mapperXY = new QSignalMapper;
+	for (int i = 0; i < 3; i++)
+	{
+		
+		mapperXY->setMapping(viewXY[i], i);
+		QObject::connect(viewXY[i], SIGNAL(triggered()), mapperXY, SLOT(map()));
+	}
+	QObject::connect(mapperXY, SIGNAL(mapped(int)), this, SLOT(viewToXYPlane(int)));
 
-	view2XY = new QAction(this);
-	view2XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
-	view2XY->setShortcut(tr("Alt+a"));
-	view2XY->setCheckable(true);
-	view2ZX = new QAction(this);
-	view2ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
-	view2ZX->setShortcut(tr("Alt+c"));
-	view2ZX->setCheckable(true);
-	view2ZY = new QAction(this);
-	view2ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
-	view2ZY->setShortcut(tr("Alt+s"));
-	view2ZY->setCheckable(true);
-	view2Group = new QActionGroup(this);
-	view2Group->addAction(view2XY);
-	view2Group->addAction(view2ZX);
-	view2Group->addAction(view2ZY);
+	QSignalMapper* mapperZX = new QSignalMapper;
+	for (int i = 0; i < 3; i++)
+	{
+		mapperZX->setMapping(viewZX[i], i);
+		QObject::connect(viewZX[i], SIGNAL(triggered()), mapperZX, SLOT(map()));
+	}
+	QObject::connect(mapperZX, SIGNAL(mapped(int)), this, SLOT(viewToZXPlane(int)));
 
-	view2Menu = new QMenu(this);
-	view2Menu->addAction(view2XY);
-	view2Menu->addAction(view2ZX);
-	view2Menu->addAction(view2ZY);
-	ui.viewButton2->setMenu(view2Menu);
-
-	connect(view2XY, SIGNAL(triggered()), this, SLOT(view2ToXYPlane()));
-	connect(view2ZX, SIGNAL(triggered()), this, SLOT(view2ToZXPlane()));
-	connect(view2ZY, SIGNAL(triggered()), this, SLOT(view2ToZYPlane()));
-
-	view3XY = new QAction(this);
-	view3XY->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
-	view3XY->setShortcut(tr("Alt+a"));
-	view3XY->setCheckable(true);
-	view3ZX = new QAction(this);
-	view3ZX->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
-	view3ZX->setShortcut(tr("Alt+c"));
-	view3ZX->setCheckable(true);
-	view3ZY = new QAction(this);
-	view3ZY->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
-	view3ZY->setShortcut(tr("Alt+s"));
-	view3ZY->setCheckable(true);
-	view3Group = new QActionGroup(this);
-	view3Group->addAction(view3XY);
-	view3Group->addAction(view3ZX);
-	view3Group->addAction(view3ZY);
-
-	view3Menu = new QMenu(this);
-	view3Menu->addAction(view3XY);
-	view3Menu->addAction(view3ZX);
-	view3Menu->addAction(view3ZY);
-	ui.viewButton3->setMenu(view3Menu);
-
-	connect(view3XY, SIGNAL(triggered()), this, SLOT(view3ToXYPlane()));
-	connect(view3ZX, SIGNAL(triggered()), this, SLOT(view3ToZXPlane()));
-	connect(view3ZY, SIGNAL(triggered()), this, SLOT(view3ToZYPlane()));
+	QSignalMapper* mapperZY = new QSignalMapper;
+	for (int i = 0; i < 3; i++)
+	{
+		mapperZY->setMapping(viewZY[i], i);
+		QObject::connect(viewZY[i], SIGNAL(triggered()), mapperZY, SLOT(map()));
+	}
+	QObject::connect(mapperZY, SIGNAL(mapped(int)), this, SLOT(viewToZYPlane(int)));
 
 	if (index[0] == 0)
 	{
-		view1ToXYPlane();
-		view1XY->setChecked(true);
+		viewToXYPlane(0);
+		viewXY[0]->setChecked(true);
 	}
 	else if (index[0] == 1)
 	{
-		view1ToZXPlane();
-		view1ZX->setChecked(true);
+		viewToZXPlane(0);
+		viewZX[0]->setChecked(true);
 	}
 	else if (index[0] == 2)
 	{
-		view1ToZYPlane();
-		view1ZY->setChecked(true);
+		viewToZYPlane(0);
+		viewZY[0]->setChecked(true);
 	}
 	if (index[1] == 0)
 	{
-		view2ToXYPlane();
-		view2XY->setChecked(true);
+		viewToXYPlane(1);
+		viewXY[1]->setChecked(true);
 	}
 	else if (index[1] == 1)
 	{
-		view2ToZXPlane();
-		view2ZX->setChecked(true);
+		viewToZXPlane(1);
+		viewZX[1]->setChecked(true);
 	}
 	else if (index[1] == 2)
 	{
-		view2ToZYPlane();
-		view2ZX->setChecked(true);
+		viewToZYPlane(1);
+		viewZY[1]->setChecked(true);
 	}
 	if (index[2] == 0)
 	{
-		view3ToXYPlane();
-		view3XY->setChecked(true);
+		viewToXYPlane(2);
+		viewXY[2]->setChecked(true);
 	}
 	else if (index[2] == 1)
 	{
-		view3ToZXPlane();
-		view3ZX->setChecked(true);
+		viewToZXPlane(2);
+		viewZX[2]->setChecked(true);
 	}
 	else if (index[2] == 2)
 	{
-		view3ToZYPlane();
-		view3ZY->setChecked(true);
+		viewToZYPlane(2);
+		viewZY[2]->setChecked(true);
 	}
 
 	ui.actionIntensity->setIcon(QIcon(":/resources/toolbar/intensity.png"));
@@ -329,9 +289,9 @@ void milxQtImage2::generateImage(const bool quietly)
 
 	ui.actionCrosshair->setIcon(QIcon(":/resources/toolbar/crosshairs_2D.png"));
 	QObject::connect(ui.actionCrosshair, SIGNAL(triggered()), this, SLOT(updateWindowsWithCursors()));
-	
+
 	ui.actionSaveScreen4->setIcon(QIcon(":/resources/toolbar/screenshot.png")); 
-	QObject::connect(ui.actionSaveScreen4, SIGNAL(triggered()), this, SLOT(saveScreen()));
+	QObject::connect(ui.actionSaveScreen4, SIGNAL(triggered()), this, SLOT(saveFullScreen()));
 
 	ui.actionControls->setIcon(QIcon(":/resources/toolbar/controls.png"));
 	QObject::connect(ui.actionControls, SIGNAL(triggered()), this, SLOT(controls()));
@@ -339,20 +299,24 @@ void milxQtImage2::generateImage(const bool quietly)
 	ui.actionAbout->setIcon(QIcon(":/resources/smilx_icon.png"));
 	QObject::connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
+	QSignalMapper* screen = new QSignalMapper;
+	screen->setMapping(ui.saveScreen_1, 0);
+	screen->setMapping(ui.saveScreen_2, 1);
+	screen->setMapping(ui.saveScreen_3, 2);
+	QObject::connect(ui.saveScreen_1, SIGNAL(clicked()), screen, SLOT(map()));
+	QObject::connect(ui.saveScreen_2, SIGNAL(clicked()), screen, SLOT(map()));
+	QObject::connect(ui.saveScreen_3, SIGNAL(clicked()), screen, SLOT(map()));
 	ui.saveScreen_1->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
-	QObject::connect(ui.saveScreen_1, SIGNAL(clicked()), this, SLOT(saveScreen1()));
-
 	ui.saveScreen_2->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
-	QObject::connect(ui.saveScreen_2, SIGNAL(clicked()), this, SLOT(saveScreen2()));
-
 	ui.saveScreen_3->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
-	QObject::connect(ui.saveScreen_3, SIGNAL(clicked()), this, SLOT(saveScreen3()));
+	QObject::connect(screen, SIGNAL(mapped(int)), this, SLOT(saveScreen(int)));
 
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->setConsole(console);
-	slicesView->addImageActor(riw[0]->GetImageActor(), getTransformMatrix());
-	slicesView->addImageActor(riw[1]->GetImageActor(), getTransformMatrix());
-	slicesView->addImageActor(riw[2]->GetImageActor(), getTransformMatrix());
+	for (int i = 0; i < 3; i++)
+	{
+		slicesView->addImageActor(riw[i]->GetImageActor(), getTransformMatrix());
+	}
 	//slicesView->addActor(newImage->GetCursorActor(), newImage->getTransformMatrix());
 	slicesView->generateRender();
 	ui.view4->SetRenderWindow(slicesView->GetRenderWindow());
@@ -395,50 +359,7 @@ void milxQtImage2::updateWindowsWithCursors()
 	}
 }
 
-
-
-void milxQtImage2::saveScreen1(QString filename)
-{
-	QFileDialog *fileSaver = new QFileDialog(this);
-	
-	QSettings settings("Shekhar Chandra", "milxQt");
-	QString path = settings.value("recentPath").toString();
-	if (filename.isEmpty())
-	{
-		filename = fileSaver->getSaveFileName(this,
-			tr("Select File Name to Save"),
-			path,
-			tr(saveExtsForScreens.c_str()));
-	}
-
-	QPointer<milxQtFile> writer = new milxQtFile; //Smart deletion
-	vtkSmartPointer<vtkWindowToImageFilter> windowToImage = vtkSmartPointer<vtkWindowToImageFilter>::New();
-	riw[0]->GetRenderWindow()->Render();
-	windowToImage->SetInput(riw[0]->GetRenderWindow());
-	windowToImage->SetMagnification(magnifyFactor);
-	//        windowToImage->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
-	windowToImage->ReadFrontBufferOff();
-	windowToImage->Update();
-	//Save screenshot
-	int extent[6];
-	windowToImage->GetOutput()->GetExtent(extent);
-	printDebug("Screenshot Size: " + QString::number(extent[1] - extent[0]) + ", " + QString::number(extent[3] - extent[2]) + ", " + QString::number(extent[5] - extent[4]));
-	bool success = writer->saveImage(filename, windowToImage->GetOutput());
-
-	//        windowVTK->GetRenderWindow()->OffScreenRenderingOff();
-	riw[0]->GetRenderWindow()->Render(); //Restore rendering
-
-	if (!success)
-	{
-		printError("Unable to save screenshot. Ignoring.");
-		return;
-	}
-
-	printInfo("Write Complete.");
-}
-
-
-void milxQtImage2::saveScreen2(QString filename)
+void milxQtImage2::saveScreen(int i, QString filename)
 {
 	QFileDialog *fileSaver = new QFileDialog(this);
 
@@ -454,8 +375,8 @@ void milxQtImage2::saveScreen2(QString filename)
 
 	QPointer<milxQtFile> writer = new milxQtFile; //Smart deletion
 	vtkSmartPointer<vtkWindowToImageFilter> windowToImage = vtkSmartPointer<vtkWindowToImageFilter>::New();
-	riw[1]->GetRenderWindow()->Render();
-	windowToImage->SetInput(riw[1]->GetRenderWindow());
+	riw[i]->GetRenderWindow()->Render();
+	windowToImage->SetInput(riw[i]->GetRenderWindow());
 	windowToImage->SetMagnification(magnifyFactor);
 	//        windowToImage->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
 	windowToImage->ReadFrontBufferOff();
@@ -467,7 +388,7 @@ void milxQtImage2::saveScreen2(QString filename)
 	bool success = writer->saveImage(filename, windowToImage->GetOutput());
 
 	//        windowVTK->GetRenderWindow()->OffScreenRenderingOff();
-	riw[1]->GetRenderWindow()->Render(); //Restore rendering
+	riw[i]->GetRenderWindow()->Render(); //Restore rendering
 
 	if (!success)
 	{
@@ -479,48 +400,7 @@ void milxQtImage2::saveScreen2(QString filename)
 }
 
 
-void milxQtImage2::saveScreen3(QString filename)
-{
-	QFileDialog *fileSaver = new QFileDialog(this);
-
-	QSettings settings("Shekhar Chandra", "milxQt");
-	QString path = settings.value("recentPath").toString();
-	if (filename.isEmpty())
-	{
-		filename = fileSaver->getSaveFileName(this,
-			tr("Select File Name to Save"),
-			path,
-			tr(saveExtsForScreens.c_str()));
-	}
-
-	QPointer<milxQtFile> writer = new milxQtFile; //Smart deletion
-	vtkSmartPointer<vtkWindowToImageFilter> windowToImage = vtkSmartPointer<vtkWindowToImageFilter>::New();
-	riw[2]->GetRenderWindow()->Render();
-	windowToImage->SetInput(riw[2]->GetRenderWindow());
-	windowToImage->SetMagnification(magnifyFactor);
-	//        windowToImage->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
-	windowToImage->ReadFrontBufferOff();
-	windowToImage->Update();
-	//Save screenshot
-	int extent[6];
-	windowToImage->GetOutput()->GetExtent(extent);
-	printDebug("Screenshot Size: " + QString::number(extent[1] - extent[0]) + ", " + QString::number(extent[3] - extent[2]) + ", " + QString::number(extent[5] - extent[4]));
-	bool success = writer->saveImage(filename, windowToImage->GetOutput());
-
-	//        windowVTK->GetRenderWindow()->OffScreenRenderingOff();
-	riw[2]->GetRenderWindow()->Render(); //Restore rendering
-
-	if (!success)
-	{
-		printError("Unable to save screenshot. Ignoring.");
-		return;
-	}
-
-	printInfo("Write Complete.");
-}
-
-
-void milxQtImage2::saveScreen(QString filename)
+void milxQtImage2::saveFullScreen(QString filename)
 {
 	QFileDialog *fileSaver = new QFileDialog(this);
 
@@ -556,87 +436,34 @@ void milxQtImage2::about()
 	aboutForm.exec();
 }
 
-void milxQtImage2::view1ToXYPlane()
+void milxQtImage2::viewToXYPlane(int i)
 {
 	if (viewerSetup)
 	{
-		riw[0]->SetSliceOrientationToXY();
-		currentView[0] = AXIAL;
+		riw[i]->SetSliceOrientationToXY();
+		currentView[i] = AXIAL;
 	}
 }
 
-void milxQtImage2::view1ToZXPlane()
+void milxQtImage2::viewToZXPlane(int i)
 {
 	if (viewerSetup)
 	{
-		riw[0]->SetSliceOrientationToXZ();
-		currentView[0] = CORONAL;
+		riw[i]->SetSliceOrientationToXZ();
+		currentView[i] = CORONAL;
 	}
 
 }
 
-void milxQtImage2::view1ToZYPlane()
+void milxQtImage2::viewToZYPlane(int i)
 {
 	if (viewerSetup)
 	{
-		riw[0]->SetSliceOrientationToYZ();
-		currentView[0] = SAGITTAL;
+		riw[i]->SetSliceOrientationToYZ();
+		currentView[i] = SAGITTAL;
 	}
 }
 
-void milxQtImage2::view2ToXYPlane()
-{
-	if (viewerSetup)
-	{
-		riw[1]->SetSliceOrientationToXY();
-		currentView[1] = AXIAL;
-	}
-}
-
-void milxQtImage2::view2ToZXPlane()
-{
-	if (viewerSetup)
-	{
-		riw[1]->SetSliceOrientationToXZ();
-		currentView[1] = CORONAL;
-	}
-}
-
-void milxQtImage2::view2ToZYPlane()
-{
-	if (viewerSetup)
-	{
-		riw[1]->SetSliceOrientationToYZ();
-		currentView[1] = SAGITTAL;
-	}
-}
-
-void milxQtImage2::view3ToXYPlane()
-{
-	if (viewerSetup)
-	{
-		riw[2]->SetSliceOrientationToXY();
-		currentView[2] = AXIAL;
-	}
-}
-
-void milxQtImage2::view3ToZXPlane()
-{
-	if (viewerSetup)
-	{
-		riw[2]->SetSliceOrientationToXZ();
-		currentView[2] = CORONAL;
-	}
-}
-
-void milxQtImage2::view3ToZYPlane()
-{
-	if (viewerSetup)
-	{
-		riw[2]->SetSliceOrientationToYZ();
-		currentView[2] = SAGITTAL;
-	}
-}
 
 void milxQtImage2::writeSettings(QWidget *parent)
 {
@@ -661,7 +488,6 @@ void milxQtImage2::writeSettings(QWidget *parent)
 		}
 	}
 
-	settings.setValue("timestamping", timestamping);
 	settings.endGroup();
 	printDebug("saveSetting");
 }
@@ -683,9 +509,7 @@ void milxQtImage2::readSettings(QMainWindow *parent)
 		index[i] = settings.value("defaultView" + QString::number(i), defaultViewMode[i]).toInt();
 	}
 
-	timestamping = settings.value("timestamping", timestamping).toBool();
 	///Handle saving dock positions/areas etc.
-	console->setTimestamps(timestamping);
 	settings.endGroup();
 	parent->restoreDockWidget(console->dockWidget());
 	printDebug("ReadSettings");
