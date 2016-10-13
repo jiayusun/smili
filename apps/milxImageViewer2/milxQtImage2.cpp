@@ -10,21 +10,39 @@
 
 
 
-milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem) 
+milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem) :milxQtImage(parent, contextSystem)
 {
+	//A member function called setupUi() to build the widget tree on the parent widget.
 	ui.setupUi(parent);
+	//NumberOfProcessors()
+	//brief Number of processors or cores on the machine.
 	maxProcessors = milx::NumberOfProcessors();
+	//The number of logical processors in the current group.
 	if (maxProcessors > 1)
 		maxProcessors = milx::NumberOfProcessors() / 2;
-	///Setup Console
+	//*Setup Console 主窗口为单文档窗口，继承于QMainWindow类，该类包含了标准的菜单栏，
+	//工具栏，内容窗口，状态栏等；停靠窗口类为QDockWidget；主要是使用上述的两个类；
 	console = new milxQtConsole;
+	//Return the dock widget of ... 
+	//QAction *QDockWidget::toggleViewAction() const  Returns a checkable action that can be used to show or close this dock widget.
 	actionConsole = console->dockWidget()->toggleViewAction();
+	//Insert picture to the toolbutton
 	actionConsole->setIcon(QIcon(":/resources/toolbar/console.png"));
+	//Add the action that can be used to show or close this dock widget to toolbar
 	ui.toolBar->addAction(actionConsole);
+	//
 	dockActions.append(actionConsole);
+	//void QDockWidget::dockLocationChanged(Qt::DockWidgetArea area)
+	//This signal is emitted when the dock widget is moved to another dock area, 
+	//or is moved to a different location in its current dock area. This happens
+	//when the dock widget is moved programmatically or is dragged to a new location by the user.
+	//A slot that set the dock widget to the new loction the user draged to is called when this signal is emited. 
 	QObject::connect(console->dockWidget(), SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), console, SLOT(setDockDefaultArea(Qt::DockWidgetArea)));
+	//Adds the given dockwidget to the specified area.
 	parent->addDockWidget(console->dockDefaultArea(), console->dockWidget());
+	//Shows the widget and its child widgets.
 	console->show();
+	//
 	readSettings(parent);
 	///viewers
 	for (int i = 0; i < 3; i++)
@@ -62,12 +80,30 @@ void milxQtImage2::generateImage(const bool quietly)
 	{
 		printDebug("Generating Image");
 		int bounds[6];
-
+		//Send signal that computation is in progress.Value carries the progress,
 		emit working(-1);
+		/*
+		This property holds whether the action is checked. The orientAct is checked by default.
+		milxQtImage::updateData(const bool orient = true)
+		Ensures the internal visualisation data is up to date.
+		*/
 		updateData(orientAct->isChecked());
-
+		/*Set/Get the extent.
+		On each axis, the extent is defined by the index of the first point 
+		and the index of the last point. The extent should be set before the 
+		"Scalars" are set or allocated. The Extent is stored in the order 
+		(X, Y, Z). The dataset extent does not have to start at (0,0,0). 
+		(0,0,0) is just the extent of the origin. 
+		The first point (the one with Id=0) is at extent 
+		(Extent[0],Extent[2],Extent[4]). As for any dataset, a data array 
+		on point data starts at Id=0
+		*/
 		imageData->GetExtent(bounds);
-
+		/*
+		milxQtImage::imageInformation()
+		Displays the origin and other important information about the image 
+		(not the displayed image, but internal image used for computation)
+		*/
 		imageInformation();
 
 
@@ -77,11 +113,17 @@ void milxQtImage2::generateImage(const bool quietly)
 #if VTK_MAJOR_VERSION <= 5
 		riw[0]->SetInput(imageData);
 #else
+		//Set the input image to the viewers
+		/* 智能指针会自动管理引用计数的增加与减少，如果检测到某对象的引用计数值减少为 0，则会自动地释放该对象的资源，从而达到自动管理内存的目的。
+		在 VTK 中，智能指针通过模板类 vtkSmartPointer 实现，使用前需 #include <vtkSmartPointer.h>。使用智能指针管理对象 无需要调用 Delete 
+		Use vtksmartpointer to manage the */
 		for (int i = 0; i < 3; i++)
 		{
 			riw[i]->SetInputData(imageData);
 		}
 #endif
+		/*has the viewer/window been setup (only done initial so is to not disturb 
+		users settings)*/
 		if (!viewerSetup)
 		{
 			printDebug("Setting up viewer");
@@ -133,6 +175,8 @@ void milxQtImage2::generateImage(const bool quietly)
 				view[i] = new milxQtRenderWindow;  //list deletion
 				view[i]->getHumanGlyph()->SetDefaultRenderer(riw[i]->GetRenderer());
 				view[i]->getHumanGlyph()->SetInteractor(riw[i]->GetRenderWindow()->GetInteractor());
+				/*< All images loaded as 3D images or 3D vector images, this shows actual dimension
+				*/
 				if (actualNumberOfDimensions > 2)
 				{
 					milxQtRenderWindow::humanAct->setEnabled(true);
@@ -148,6 +192,9 @@ void milxQtImage2::generateImage(const bool quietly)
 			//            humanGlyph->InteractiveOn();
 
 			//Sphere annotate
+			/*virtual vtkRenderer* vtkImageViewer2::GetRenderer():	
+			Get the internal render window, renderer, image actor, and image map instances.
+			virtual void vtkInteractorObserver::SetDefaultRenderer(vtkRenderer *)*/
 			for (int i = 0; i < 3; i++)
 			{
 				sphereWidget->SetDefaultRenderer(riw[i]->GetRenderer());
@@ -237,47 +284,56 @@ void milxQtImage2::generateImage(const bool quietly)
 
 	if (index[0] == 0)
 	{
-		viewToXYPlane(0);
+		riw[0]->SetSliceOrientationToXY();
+		currentView[0] = AXIAL;
 		viewXY[0]->setChecked(true);
 	}
 	else if (index[0] == 1)
 	{
-		viewToZXPlane(0);
+		riw[0]->SetSliceOrientationToXZ();
+		currentView[0] = CORONAL;
 		viewZX[0]->setChecked(true);
 	}
 	else if (index[0] == 2)
 	{
-		viewToZYPlane(0);
+		riw[0]->SetSliceOrientationToYZ();
+		currentView[0] = SAGITTAL;
 		viewZY[0]->setChecked(true);
 	}
 	if (index[1] == 0)
 	{
-		viewToXYPlane(1);
+		riw[1]->SetSliceOrientationToXY();
+		currentView[1] = AXIAL;
 		viewXY[1]->setChecked(true);
 	}
 	else if (index[1] == 1)
 	{
-		viewToZXPlane(1);
+		riw[1]->SetSliceOrientationToXZ();
+		currentView[1] = CORONAL;
 		viewZX[1]->setChecked(true);
 	}
 	else if (index[1] == 2)
 	{
-		viewToZYPlane(1);
+		riw[1]->SetSliceOrientationToYZ();
+		currentView[1] = SAGITTAL;
 		viewZY[1]->setChecked(true);
 	}
 	if (index[2] == 0)
 	{
-		viewToXYPlane(2);
+		riw[2]->SetSliceOrientationToXY();
+		currentView[2] = AXIAL;
 		viewXY[2]->setChecked(true);
 	}
 	else if (index[2] == 1)
 	{
-		viewToZXPlane(2);
+		riw[2]->SetSliceOrientationToXZ();
+		currentView[2] = CORONAL;
 		viewZX[2]->setChecked(true);
 	}
 	else if (index[2] == 2)
 	{
-		viewToZYPlane(2);
+		riw[2]->SetSliceOrientationToYZ();
+		currentView[2] = SAGITTAL;
 		viewZY[2]->setChecked(true);
 	}
 
@@ -310,12 +366,11 @@ void milxQtImage2::generateImage(const bool quietly)
 	ui.saveScreen_2->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	ui.saveScreen_3->setIcon(QIcon(":/resources/toolbar/screenshot.png"));
 	QObject::connect(screen, SIGNAL(mapped(int)), this, SLOT(saveScreen(int)));
-
 	QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
 	slicesView->setConsole(console);
-	for (int i = 0; i < 3; i++)
+	for (int j = 0; j < 3; j++)
 	{
-		slicesView->addImageActor(riw[i]->GetImageActor(), getTransformMatrix());
+		slicesView->addImageActor(riw[j]->GetImageActor(), getTransformMatrix());
 	}
 	//slicesView->addActor(newImage->GetCursorActor(), newImage->getTransformMatrix());
 	slicesView->generateRender();
@@ -442,6 +497,15 @@ void milxQtImage2::viewToXYPlane(int i)
 	{
 		riw[i]->SetSliceOrientationToXY();
 		currentView[i] = AXIAL;
+		QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
+		slicesView->setConsole(console);
+		for (int j = 0; j < 3; j++)
+		{
+			slicesView->addImageActor(riw[j]->GetImageActor(), getTransformMatrix());
+		}
+		//slicesView->addActor(newImage->GetCursorActor(), newImage->getTransformMatrix());
+		slicesView->generateRender();
+		ui.view4->SetRenderWindow(slicesView->GetRenderWindow());
 	}
 }
 
@@ -451,6 +515,15 @@ void milxQtImage2::viewToZXPlane(int i)
 	{
 		riw[i]->SetSliceOrientationToXZ();
 		currentView[i] = CORONAL;
+		QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
+		slicesView->setConsole(console);
+		for (int j = 0; j < 3; j++)
+		{
+			slicesView->addImageActor(riw[j]->GetImageActor(), getTransformMatrix());
+		}
+		//slicesView->addActor(newImage->GetCursorActor(), newImage->getTransformMatrix());
+		slicesView->generateRender();
+		ui.view4->SetRenderWindow(slicesView->GetRenderWindow());
 	}
 
 }
@@ -461,6 +534,15 @@ void milxQtImage2::viewToZYPlane(int i)
 	{
 		riw[i]->SetSliceOrientationToYZ();
 		currentView[i] = SAGITTAL;
+		QPointer<milxQtRenderWindow> slicesView = new milxQtRenderWindow;  //list deletion
+		slicesView->setConsole(console);
+		for (int j = 0; j < 3; j++)
+		{
+			slicesView->addImageActor(riw[j]->GetImageActor(), getTransformMatrix());
+		}
+		//slicesView->addActor(newImage->GetCursorActor(), newImage->getTransformMatrix());
+		slicesView->generateRender();
+		ui.view4->SetRenderWindow(slicesView->GetRenderWindow());
 	}
 }
 

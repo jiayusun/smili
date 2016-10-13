@@ -8,6 +8,8 @@
 #include <QPointer>
 #include <QDesktopWidget>
 
+//在fish类的构造函数后，加一个冒号（:），然后加上父类的带参数的构造函数。
+//这样，在子类的构造函数被调用时，系统就会去调用父类的带参数的构造函数去构造对象。
 class MILXQT_EXPORT milxQtImage2 : public milxQtImage
 {
 	Q_OBJECT
