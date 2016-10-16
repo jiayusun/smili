@@ -5,10 +5,10 @@ PROJECT(milxImageViewer2 C CXX)
 #find libraries
 include(find)
 set( UIs milxQtImage2.ui)
-# 所有的.h文件  
+# all .h file  
 set (HEADER_FILES milxQtImage2.h)  
   
-# 所有的.cpp文件  
+# all .cpp file  
 set (SOURCES_FILES milxImageViewer2.cpp milxQtImage2.cpp ${HEADER_FILES})
 #--------------------------------------------------------------------------------
 # This sets the windows build that will need the special winmain@16 call. Qt provides

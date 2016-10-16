@@ -20,14 +20,14 @@ milxQtImage2::milxQtImage2(QMainWindow *parent, bool contextSystem) :milxQtImage
 	//The number of logical processors in the current group.
 	if (maxProcessors > 1)
 		maxProcessors = milx::NumberOfProcessors() / 2;
-	//*Setup Console 主窗口为单文档窗口，继承于QMainWindow类，该类包含了标准的菜单栏，
-	//工具栏，内容窗口，状态栏等；停靠窗口类为QDockWidget；主要是使用上述的两个类；
+	//Setup Console 
 	console = new milxQtConsole;
 	//Return the dock widget of ... 
 	//QAction *QDockWidget::toggleViewAction() const  Returns a checkable action that can be used to show or close this dock widget.
 	actionConsole = console->dockWidget()->toggleViewAction();
 	//Insert picture to the toolbutton
 	actionConsole->setIcon(QIcon(":/resources/toolbar/console.png"));
+	actionConsole->setToolTip("Hide/Show console docking window");
 	//Add the action that can be used to show or close this dock widget to toolbar
 	ui.toolBar->addAction(actionConsole);
 	//
@@ -114,9 +114,6 @@ void milxQtImage2::generateImage(const bool quietly)
 		riw[0]->SetInput(imageData);
 #else
 		//Set the input image to the viewers
-		/* 智能指针会自动管理引用计数的增加与减少，如果检测到某对象的引用计数值减少为 0，则会自动地释放该对象的资源，从而达到自动管理内存的目的。
-		在 VTK 中，智能指针通过模板类 vtkSmartPointer 实现，使用前需 #include <vtkSmartPointer.h>。使用智能指针管理对象 无需要调用 Delete 
-		Use vtksmartpointer to manage the */
 		for (int i = 0; i < 3; i++)
 		{
 			riw[i]->SetInputData(imageData);
@@ -233,15 +230,12 @@ void milxQtImage2::generateImage(const bool quietly)
 	{
 		viewXY[i] = new QAction(this);
 		viewXY[i]->setText(QApplication::translate("Render", "Axial (xy-plane)", 0, QApplication::UnicodeUTF8));
-		viewXY[i]->setShortcut(tr("Alt+a"));
 		viewXY[i]->setCheckable(true);
 		viewZX[i] = new QAction(this);
 		viewZX[i]->setText(QApplication::translate("Render", "Coronal (zx-plane)", 0, QApplication::UnicodeUTF8));
-		viewZX[i]->setShortcut(tr("Alt+c"));
 		viewZX[i]->setCheckable(true);
 		viewZY[i] = new QAction(this);
 		viewZY[i]->setText(QApplication::translate("Render", "Sagittal (zy-plane)", 0, QApplication::UnicodeUTF8));
-		viewZY[i]->setShortcut(tr("Alt+s"));
 		viewZY[i]->setCheckable(true);
 		viewGroup[i] = new QActionGroup(this);
 		viewGroup[i]->addAction(viewXY[i]);

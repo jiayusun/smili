@@ -16,6 +16,12 @@
     <height>585</height>
    </size>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>633</width>
+    <height>585</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>milxQtImage2</string>
   </property>
@@ -153,10 +159,16 @@
    <property name="text">
     <string>Refresh</string>
    </property>
+   <property name="toolTip">
+    <string>Refresh the window views, levels and camera to default</string>
+   </property>
   </action>
   <action name="actionCrosshair">
    <property name="text">
     <string>Crosshair</string>
+   </property>
+   <property name="toolTip">
+    <string>Enable crosshairs for all images.</string>
    </property>
   </action>
   <action name="actionIntensity">
@@ -164,17 +176,23 @@
     <string>Intensity</string>
    </property>
    <property name="toolTip">
-    <string>Intensity</string>
+    <string>Auto level the image intensities based on inter-quartile ranges.</string>
    </property>
   </action>
   <action name="actionSaveScreen4">
    <property name="text">
     <string>SaveScreen4</string>
    </property>
+   <property name="toolTip">
+    <string>Save a screenshot of the active window exactly as displayed</string>
+   </property>
   </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="toolTip">
+    <string>About SMILI</string>
    </property>
   </action>
   <action name="actionControls">
